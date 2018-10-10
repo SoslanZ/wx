@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>layui</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css"  media="all">
+  <link rel="stylesheet" href="__PUBLIC__/font-awesome/css/font-awesome.min.css" media="all" />
+  <link rel="stylesheet" href="__CSS__/admin.css"  media="all">
+  <style type="text/css">
+    #mypage .cur {
+        border: none;
+        background: #009688;
+        color: #fff;
+    }
+    /* tooltip */
+    #tooltip{
+      position:absolute;
+      border:1px solid #ccc;
+      background:#333;
+      padding:2px;
+      display:none;
+      color:#fff;
+    }
+</style>
+</head>
+<body style="padding:10px;">
+  <div class="tplay-body-div"> 
+    <div class="layui-tab layui-tab-card">
+      <ul class="layui-tab-title">
+        <li class="layui-this">推广计划</li>
+        <li><a href="{:url('dsp/advert/index')}" class="a_menu">广告</a></li>
+      </ul>
+      <div class="layui-tab-content"  >
+        <div class="layui-tab-item layui-show" style="height: 800px; margin-top: 15px;">
+          <div class="box-a" style="width:20%; height:80px; float:left;border-right: 1px solid #E0E0E0;">
+            <ul class="layui-timeline">
+              <li class="layui-col-xs6" style="width: 300px;">
+                  <a lay-href="" class="layadmin-backlog-body">
+                    <h3>总曝光量</h3><br>
+                    <p><cite >{$sum_list.im}</cite></p>
+                  </a>
+                </li>
+            </ul>
+           </div>
+
+           <div class="box-a" style="width:20%; height:80px; float:left;border-right: 1px solid #E0E0E0; margin-left: 10px;">
+            <ul class="layui-timeline">
+              <li class="layui-col-xs6" style="width: 300px;">
+                  <a lay-href="" class="layadmin-backlog-body">
+                    <h3>总点击量</h3><br>
+                    <p><cite >{$sum_list.ck}</cite></p>
+                  </a>
+                </li>
+            </ul>
+           </div>
+
+           <div class="box-a " style="width:20%;height:80px; float:left;border-right: 1px solid #E0E0E0;  margin-left: 10px;">
+            <ul class="layui-timeline">
+              <li class="layui-col-xs6" style="width: 300px;">
+                  <a lay-href="" class="layadmin-backlog-body">
+                    <h3>平均点击率</h3><br>
+                    <p><cite >{$sum_list.ck_rate}%</cite></p>
+                  </a>
+                </li>
+            </ul>
+           </div>
+
+           <div class="box-a" style="width:20%;height:80px; float:left; margin-left: 10px;">
+            <ul class="layui-timeline">
+              <li class="layui-col-xs6" style="width: 400px;  margin-left: 10px;">
+                  <a lay-href="" class="layadmin-backlog-body">
+                    <h3>总花费(元)</h3><br>
+                    <p><cite >{$sum_list.cost}<!--  <span class="layui-badge layui-bg-green myhu" style="margin-left: 100px;">?</span> --></cite></p>
+
+                  </a>
+                </li>
+            </ul>
+           </div>
+
+          <div style="margin-top: 20px; width: 100%; height: 200px; float:left; border-top: 1px solid #E0E0E0;">
+            <form class="layui-form serch" action="{:url('dsp/campaign/index')}" method="get" >
+              <div class="layui-form-item" style="float: left; margin-top: 15px;">
+                <div class="layui-input-inline">
+                  <input type="text" name="name" autocomplete="off" placeholder="请输计划名称" class="layui-input layui-btn-sm" value="{$search.name}">
+                </div>
+                <div class="layui-input-inline">
+                  <input type="text" name="day" autocomplete="off" placeholder="选择时间" class="layui-input layui-btn-sm" value="{$search.day}" id="day">
+                </div>
+                <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="serch">搜索</button>
+              </div>
+            </form> 
+
+             <table class="layui-table" lay-skin="line">
+              <thead>
+                <tr>
+                  <th>计划名称</th>
+                  <th>曝光量</th>
+                  <th>点击量</th>
+                  <th>点击率</th>
+                  <th>点击均价</th>
+                  <th>花费</th>
+                  <th width="100">状态</th>
+                  <th>限额（元/天）</th>
+                  <th>操作</th>
+                </tr> 
+              </thead>
+              <tbody>
+           
+           {notempty name="$list"}
+             {volist name="$list" id="vo"}
+                  <tr>
+                    <td>{$vo.name}</td>
+                    <td>{$vo.im}</td>
+                    <td>{$vo.ck}</td>
+                    <td>{$vo.rate}%</td>
+                    <td>{$vo.ck_rate}</td>
+                    <td>{$vo.cost}</td>
+                    <td>
+                      {if condition="$vo.status eq 1"}
+                      <div class="layui-form" >
+                        <div class="layui-input-inline" >
+                            <input type="checkbox" name="stat" lay-skin="switch" lay-filter="stat" lay-text="开启|关闭" data-id="{$vo.id}" checked status="{$vo.status}">
+                        </div>
+                      </div>
+                      {else /}
+                      <div class="layui-form" >
+                        <div class="layui-input-inline" >
+                            <input type="checkbox" name="stat" lay-skin="switch" lay-filter="stat" lay-text="开启|关闭" status="{$vo.status}" data-id="{$vo.id}">
+                        </div>
+                      </div>
+                      {/if}
+                    </td>
+                    <td>{$vo.budget}</td>
+                    <td>
+                      <a href="{:url('dsp/campaign/editor',['id'=>endecodeUserId($vo.id)])}" class="a_menu layui-btn layui-btn-primary layui-btn-xs">编辑</a>
+                      <button  class="a_menu layui-btn layui-btn-primary layui-btn-xs del" data-id="{$vo.id}">删除</button>
+                    </td>
+                  </tr>
+              {/volist}
+            {/notempty}
+            
+              </tbody>
+            </table>
+            <div style="padding:0 20px;" id="mypage">{$list->render()}</div>
+          </div>      
+        </div>
+      </div>
+      
+  {include file="public/foot"}
+    </div>
+</body>
+ <script>
+      layui.use(['form','jquery','layer','laydate'], function() {
+              var layer = layui.layer;
+              var laydate = layui.laydate;
+              $ = layui.jquery;
+              var form = layui.form;
+              form.on('switch(stat)', function(data) {
+                  var id = $(this).attr('data-id');
+                  var status = $(this).attr('status');
+                  if(status==0){
+                    status=1;
+                  }else{
+                    status=0;
+                  }
+                  $.ajax({
+                      url:"{:url('dsp/campaign/btnstatus')}",
+                      data:{id:id,status:status},
+                      type:'post',
+                      async: false,
+                      success:function(res) {
+                          if(res.code == 1) {
+                              layer.alert(res.msg, function(index){
+                                location.href = res.url;
+                              })
+                          } else {
+                              layer.msg(res.msg);
+                          }
+                      }
+                  })
+                  return false;
+              });
+              $('.del').click(function(){
+                var id = $(this).attr('data-id');
+                layer.confirm('确定要删除此推广计划？',function(){
+                    $.ajax({
+                      url:"{:url('dsp/campaign/del')}",
+                      data:{id:id},
+                      type:'post',
+                      async: false,
+                      success:function(res) {
+                          if(res.code == 1) {
+                              layer.alert(res.msg, function(index){
+                                location.href = res.url;
+                              })
+                          } else {
+                              layer.msg(res.msg);
+                          }
+                      }
+                  })
+                })
+              })
+              laydate.render({
+                elem: '#day'
+                ,range: '~'
+                , value: "{$search.day}"
+              });
+
+              $(".myhu").hover(function() {
+                openMsg($(this));
+              }, function() {
+                layer.close(subtips);
+              });
+              function openMsg(obj) {
+
+                subtips = layer.tips('<span style="color:black;">如有删除过推广计划数据将包含在内</span>', obj,{tips:[1,'#f2f2f2'],time: 30000});
+              }
+      });
+    </script>
+</html>

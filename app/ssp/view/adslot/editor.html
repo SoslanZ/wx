@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>layui</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css"  media="all">
+  <link rel="stylesheet" href="__PUBLIC__/font-awesome/css/font-awesome.min.css" media="all" />
+  <link rel="stylesheet" href="__CSS__/admin.css"  media="all">
+  <style type="text/css">
+</style>
+</head>
+<body style="padding:10px;">
+  <div class="tplay-body-div">
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
+      <legend>编辑广告位</legend>
+    </fieldset>
+    <br>
+      <form class="layui-form" action="{:url('ssp/advertposition/editor')}" lay-filter="example" method="post" id="pos">
+        <div class="layui-form-item" style="width: 600px;">
+          <label class="layui-form-label">广告位名称&nbsp;<span style="color: red;">*</span></label>
+          <div class="layui-input-block">
+            <input type="text" name="name" lay-verify="required" autocomplete="off" placeholder="请输入广告位名称" class="layui-input" value="{$list.name}">
+          </div>
+        </div>
+        <div class="layui-form-item" style="width: 600px;">
+          <label class="layui-form-label">所属媒体&nbsp;<span style="color: red;">*</span></label>
+          <div class="layui-input-block">
+            <select name="media_id" lay-filter="aihao" disabled="" lay-verify="required">
+              <option value=""></option>
+              {volist name="$media_data" id="vo"}
+                  <option value="{$vo.id}" {if condition="$vo.id eq $list.media_id"} selected {else /} {/if} >{$vo.mname}</option>
+              {/volist}
+            </select>
+          </div>
+        </div>
+        <div class="layui-form-item" style="width: 600px;">
+          <label class="layui-form-label">广告形式&nbsp;<span style="color: red;">*</span></label>
+          <div class="layui-input-block">
+            <select name="slot_type" lay-filter="aihao" disabled="" lay-verify="required">
+              <option value=""></option>
+              <option value="1" {if condition="$list.template_id eq 1"} selected {else /} {/if} >Banner(582*166px)</option>
+              <option value="2" {if condition="$list.template_id eq 2"} selected {else /} {/if} >插屏(600*500px)</option>
+              <option value="3" {if condition="$list.template_id eq 3"} selected {else /} {/if} >悬浮窗(200*200px/50*50px)</option>
+              <option value="4" {if condition="$list.template_id eq 4"} selected {else /} {/if} >悬浮窗(200*200px/60*60px)</option>
+              <option value="5" {if condition="$list.template_id eq 5"} selected {else /} {/if} >悬浮窗(200*200px/70*70px)</option>
+            </select>
+          </div>
+        </div>
+        
+        <input type="hidden" value="{$id}" name="id">
+        <div class="layui-form-item">
+          <div class="layui-input-block">
+            <button class="layui-btn" lay-submit="" lay-filter="possa">提交保存</button>
+            <a href="{:url('ssp/adslot/index')}" class="layui-btn layui-btn-primary">取消并返回</a>
+          </div>
+        </div>
+      </form>
+    {include file="public/foot"}
+  </div>
+</body>
+ <script type="text/javascript">
+    layui.use(['layer', 'form'], function(){
+      var layer = layui.layer
+      ,form = layui.form;
+      form.on('select(charge_way)', function(data){
+      if (data.value==1 || data.value==4 ){
+        $('#coin').html('(%)')
+      }else{
+        $('#coin').html('(元)')
+      } 
+    });
+      $(window).on('load', function() {
+              form.on('submit(possa)', function(data) {
+                  $.ajax({
+                      url:"{:url('ssp/adslot/editor')}",
+                      data:$('#pos').serialize(),
+                      type:'post',
+                      async: false,
+                      success:function(res) {
+                          if(res.code == 1) {
+                              layer.alert(res.msg, function(index){
+                                location.href = res.url;
+                              })
+                          } else {
+                              layer.msg(res.msg);
+                          }
+                      }
+                  })
+                  return false;
+              });
+          });
+
+}); 
+    </script>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>layui</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css"  media="all">
+  <link rel="stylesheet" href="__PUBLIC__/font-awesome/css/font-awesome.min.css" media="all" />
+  <link rel="stylesheet" href="__CSS__/admin.css"  media="all">
+  <style type="text/css">
+
+    /* tooltip */
+    #tooltip{
+      position:absolute;
+      border:1px solid #ccc;
+      background:#333;
+      padding:2px;
+      display:none;
+      color:#fff;
+    }
+
+
+</style>
+</head>
+<body style="padding:10px;">
+  <div class="tplay-body-div" > 
+  <form class="layui-form" method="post" action="{:url('dsp/campaign/add')}" id="create">
+    <div class="layui-tab layui-tab-brief" style="margin-left: 100px;width: 700px;">
+          <div class="layui-form-item">
+            <label class="layui-form-label">推广计划</label>
+            <div class="layui-input-block">
+              <input name="name" lay-verify="required" autocomplete="off" placeholder="请输入推广计划名称" class="layui-input" type="text" value="{$list.name}">
+            </div>
+          </div>
+            
+          <div class="layui-form-item">
+            <label class="layui-form-label">每日预算</label>
+            <div class="layui-input-block">
+              <input name="budget" lay-verify="required" autocomplete="off" placeholder="请输入每日最高预算" class="layui-input" type="text" value="{$list.budget}">
+            </div>
+          </div>
+
+          <div class="layui-form-item">
+          <label class="layui-form-label">投放速度</label>
+            <div class="layui-input-block">
+              <input type="radio" name="strategy" value="0" title="标准投放" {if condition="$list.strategy eq 0"}checked{/if} lay-verify="required">
+              <input type="radio" name="strategy" value="1" title="加速投放" {if condition="$list.strategy eq 1"}checked{/if} lay-verify="required">
+            </div>
+          </div>
+            <input type="hidden" name="id" value="{$list.id}">
+           <div class="layui-form-item">
+            <div class="layui-input-block">
+              <br>
+              <button class="layui-btn" lay-submit="" lay-filter="create">提交</button>
+              <a href="{:url('dsp/campaign/index')}" class="layui-btn layui-btn-primary">返回</a>
+            </div>
+           </div>
+    </div>  
+      </form>
+     </div>
+    <div style="padding:0 20px;"></div>
+  {include file="public/foot"}
+</div>
+</body>
+<script>
+    var message;
+    layui.config({
+        base: '__JS__/',
+        version: '1.0.1'
+    }).use(['app', 'message'], function() {
+        var app = layui.app,
+            $ = layui.jquery,
+            layer = layui.layer;
+        //将message设置为全局以便子页面调用
+        message = layui.message;
+        //主入口
+        app.set({
+            type: 'iframe'
+        }).init();
+    });
+</script>
+ <script>
+      layui.use(['layer', 'form'], function() {
+          var layer = layui.layer,
+              $ = layui.jquery,
+              form = layui.form;
+          $(window).on('load', function() {
+              form.on('submit(create)', function(data) {
+                  $.ajax({
+                      url:"{:url('dsp/campaign/editor')}",
+                      data:$('#create').serialize(),
+                      type:'post',
+                      async: false,
+                      success:function(res) {
+                          if(res.code == 1) {
+                              layer.alert(res.msg, function(index){
+                                location.href = res.url;
+                              })
+                          } else {
+                              layer.msg(res.msg);
+                          }
+                      }
+                  })
+                  return false;
+              });
+          });
+      });
+    </script>
+</html>

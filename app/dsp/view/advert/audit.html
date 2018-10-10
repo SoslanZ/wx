@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>layui</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css"  media="all">
+  <link rel="stylesheet" href="__PUBLIC__/font-awesome/css/font-awesome.min.css" media="all" />
+  <link rel="stylesheet" href="__CSS__/admin.css"  media="all">
+  <style type="text/css">
+       #mypage .cur {
+        border: none;
+        background: #009688;
+        color: #fff;
+    }
+    /* tooltip */
+    #tooltip{
+      position:absolute;
+      border:1px solid #ccc;
+      background:#333;
+      padding:2px;
+      display:none;
+      color:#fff;
+    }
+</style>
+</head>
+<body style="padding:10px;">
+  <div class="tplay-body-div"> 
+    <div class="layui-tab layui-tab-card">
+      <div class="layui-tab-content" >
+        <div class="layui-tab-item layui-show" style=" margin-top: 15px;">
+
+            <form class="layui-form serch" action="{:url('dsp/advert/audit')}" method="post">
+                <div class="layui-form-item" style="float: left;">
+                  <label class="layui-form-label">广告主：</label>
+                    <div class="layui-input-inline">
+                      <select name="uid">
+                        <option value="">全部</option>
+                          {notempty name="$admin_data"}
+                           {volist name="$admin_data" id="vo"}
+                                <option value="{$vo.id}" {if condition="$search.uid eq $vo.id"}selected{/if}>{$vo.name}</option>
+                            {/volist}
+                          {/notempty}
+                      </select>
+                    </div>
+                  <label class="layui-form-label">广告状态：</label>
+                    <div class="layui-input-inline">
+                      <select name="status">
+                        <option value="">全部</option>
+                        <option value="1" {if condition="$search.status eq 1"}selected{/if}>审核通过</option>
+                        <option value="2" {if condition="$search.status eq 2"}selected{/if}>审核未通过</option>
+                        <option value="3" {if condition="$search.status eq 3"}selected{/if}>待审核</option>
+                      </select>
+                  </div>
+                  <label class="layui-form-label">广告名称：</label>
+                  <div class="layui-input-inline">
+                    <input type="text" name="name" lay-verify="title" autocomplete="off" placeholder="请输入广告名称" class="layui-input layui-btn-sm" value="{$search.name}">
+                  </div>
+                  <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="serch">搜索</button>
+                </div>
+          </form> 
+
+             <table class="layui-table" lay-skin="line">
+              <thead>
+                <tr>
+                  <th>广告名称</th>
+                  <th>状态</th>
+                  <th>原因</th>
+                  <th>操作</th>
+                </tr> 
+              </thead>
+              <tbody>
+             {notempty name="$list"}
+             {volist name="$list" id="vo"}
+                  <tr>
+                    <td>{$vo.name}</td>
+                    <td>
+                      {if condition="$vo.status eq 1"}审核成功{elseif condition="$vo.status eq 0"/} 待审核
+                    {elseif condition="$vo.status eq 2"/} 审核未通过{else /} 未知{/if}
+                    </td>
+                    <td>{$vo.reson}</td>
+                    <td>
+                      {if condition="$vo.status eq 1"}
+                      <a href="javascript:;" class="a_menu status layui-btn layui-btn-primary layui-btn-xs" data-id="{:endecodeUserId($vo.id)}" status='2'>拒绝</a>
+                      <a href="javascript:;" class="a_menu layui-btn layui-btn-primary layui-btn-xs show">查看<span class="main_{$vo.id}" style="display: none;">{$vo.main}</span><span class="land_{$vo.id}" style="display: none;">{$vo.land}</span></a>
+                      {elseif condition="$vo.status eq 0"/}
+                      <a href="javascript:;" class="a_menu status layui-btn layui-btn-primary layui-btn-xs" data-id="{:endecodeUserId($vo.id)}" status='1'>通过</a>
+                      <a href="javascript:;" class="a_menu status layui-btn layui-btn-primary layui-btn-xs" data-id="{:endecodeUserId($vo.id)}" status='2'>拒绝</a>
+                      <a href="javascript:;" class="a_menu layui-btn layui-btn-primary layui-btn-xs show">查看<span class="main_{$vo.id}" style="display: none;">{$vo.main}</span><span class="land_{$vo.id}" style="display: none;">{$vo.land}</span></a>
+                      {elseif condition="$vo.status eq 2"/}
+                      <a href="javascript:;" class="a_menu status layui-btn layui-btn-primary layui-btn-xs" data-id="{:endecodeUserId($vo.id)}" status='1'>通过</a>
+                      <a href="javascript:;" class="a_menu layui-btn layui-btn-primary layui-btn-xs show">查看<span class="main_{$vo.id}" style="display: none;">{$vo.main}</span><span class="land_{$vo.id}" style="display: none;">{$vo.land}</span></a>
+                      {else /}
+                      <a href="javascript:;" class="a_menu status layui-btn layui-btn-primary layui-btn-xs" data-id="{:endecodeUserId($vo.id)}" status='1'>通过</a>
+                      <a href="javascript:;" class="a_menu status layui-btn layui-btn-primary layui-btn-xs" data-id="{:endecodeUserId($vo.id)}" status='2'>拒绝</a>
+                      <a href="javascript:;" class="a_menu layui-btn layui-btn-primary layui-btn-xs show">查看<span class="main_{$vo.id}" style="display: none;">{$vo.main}</span><span class="land_{$vo.id}" style="display: none;">{$vo.land}</span></a>
+                      {/if}
+                    </td>
+
+                  </tr>
+              {/volist}
+            {/notempty}
+              </tbody>
+            </table>      
+        </div>
+      </div>
+      <div style="padding:0 20px;" id="mypage">{$list->render()}</div>  
+  {include file="public/foot"}
+    </div>
+</body>
+     <script>
+      layui.use(['layer', 'form'], function() {
+        $('.status').click(function(){
+          var id = $(this).attr('data-id');
+          var status = $(this).attr('status');
+          if(status==1){
+            $.ajax({
+                type: "POST",
+                url: "{:url('dsp/advert/status')}",
+                data: { id:id,status:status },
+                success: function (res) {
+                    layer.msg(res.msg);
+                    if(res.code == 1) {
+                      setTimeout(function(){
+                        location.href = res.url;
+                      },1500)
+                    }
+                },
+                error: function () {
+                    alert("出现错误");
+                    return false;
+                }
+              })
+          }else{
+            layer.open({
+              closeBtn: 0,
+              title:0,
+              btnAlign: 'l',
+              area: ['500px', '200px'], //宽高
+              btn: ['确定', '取消'], //按钮
+              shadeClose:true,
+              content: '<textarea placeholder="请输入原因" class="layui-textarea reson" name="reson"></textarea>',
+                yes:function(){
+                    var reson = $('.reson').val();
+
+                    if(!reson || !id || !status ){
+                      layer.msg('请输入原因');return false;
+                    }
+                   $.ajax({
+                    type: "POST",
+                    url: "{:url('dsp/advert/status')}",
+                    data: { id:id,status:status,reson:reson },
+                    success: function (res) {
+                        layer.msg(res.msg);
+                        if(res.code == 1) {
+                          setTimeout(function(){
+                            location.href = res.url;
+                          },1500)
+                        }
+                    },
+                    error: function () {
+                        alert("出现错误");
+                        return false;
+                    }
+                  }) 
+                }
+              });
+
+          }
+          
+        })
+        $('.show').click(function(){
+          var main = $(this).find('span').eq(0).html();
+          var land = $(this).find('span').eq(1).html();
+          layer.open({
+              closeBtn: 0,
+              title:0,
+              btnAlign: 'l',
+              area: ['500px', '600px'], //宽高
+              btn:false,
+              shadeClose:true,
+              content: '<div style="width:500px;height:300px;">主&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;图：<img src="'+land+'" alt="" onload="scalingImg(this)" width="" height=""></div><div style="width:500px;height:200px;">广告图片：<img src="'+main+'" alt="" onload="scalingImg(this)" width="" height=""></div>',
+          })
+        })  
+      });
+      function scalingImg(obj){
+          var $this = $(obj);
+
+          var imgWidth=$this.width();
+          var imgHeight=$this.height();
+          var parent = $this.parent();
+          var containerWidth = parent.width();
+          var containerHeight=parent.height();
+
+          var containerRatio = containerWidth / containerHeight;
+          var imgRatio = imgWidth / imgHeight;
+
+          if (imgRatio > containerRatio) {
+              imgWidth = containerWidth;
+              imgHeight = containerWidth / imgRatio;
+          } else if (imgRatio < containerRatio) {
+              imgHeight = containerHeight;
+              imgWidth = containerHeight * imgRatio;
+          } else {
+              imgWidth = containerWidth;
+              imgHeight = containerHeight;
+          }
+
+          $this.attr('width',imgWidth);
+          $this.attr('height',imgHeight);
+    }
+    </script>
+</html>
+

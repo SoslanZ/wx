@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>tplay_main</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <script src="__PUBLIC__/echarts/echarts.min.js"></script>
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/font-awesome/css/font-awesome.min.css" media="all">
+  <link rel="stylesheet" href="__CSS__/admin-1.css" media="all">
+<body class="layui-layout-body" style="overflow-y:visible;">
+<div class="tplay-body-div">
+  <div class="layui-card-header">最新数据（当日数据仅供参考，请以隔天数据为准）</div>
+    <div class="layui-card-body">
+       <form class="layui-form serch" action="{:url('dsp/report/index')}" method="post" id="fofo">
+      
+        <div class="layui-form-item" style="margin-left: 50px;">
+            <div class="layui-input-inline">
+              <select name="campaign_id" lay-filter="campaign_id" id="campaign_id">
+                <option value="0">全部推广计划</option>
+                 {volist name="$campaign" id="vo"}
+                    <option value="{$vo.id}" >{$vo.name}</option>
+                {/volist}
+                </select>
+            </div>
+            <div class="layui-input-inline">
+              <select name="creative_id" lay-filter="creative_id" id="creative_id">
+                <option value="0">全部广告</option>
+                 
+                </select>
+            </div>
+            <div class="layui-input-inline">
+                <select name="chart" lay-filter="fifi" id="isis">
+                    <option value="0"  >曝光量</option>
+                    <option value="1"  >点击量</option>
+                    <option value="2"  >花费</option>
+                    <option value="3"  >点击率</option>
+                    <option value="4"  >点击均价</option>
+                </select>
+            </div>
+             <div class="layui-input-inline">
+               <input type="text" class="layui-input" id="test6" placeholder=" - " name="times">
+            </div>
+            <div class="layui-input-inline" style="width:400px;">
+              <a href="javascript:void(0)" class="layui-btn" id="tday">今日</a>
+              <a href="javascript:void(0)" class="layui-btn" id="yday">昨日</a>
+              <a href="javascript:void(0)" class="layui-btn" id="sday">最近七日</a>
+              <a href="javascript:void(0)" class="layui-btn" id="lday">最近30天</a>
+            </div>
+            <input type="hidden" name="btt" value="0" id="btt">
+            </div>
+
+         <div class="layui-card-body" id="main" style="height: 450px;width: 100%;"></div>
+  </form>
+    <div class="layui-tab-item layui-show">
+       <script type="text/html" id="toolbarDemo"><h3>详细数据</h3></script>
+       <table class="layui-hide" id="report_tab" lay-filter="report_tab"></table>
+    </div>
+{include file="public/foot"}
+</div>
+<script>
+        layui.use(['laydate','table','form'], function(){
+          var laydate = layui.laydate;
+          var table = layui.table,form=layui.form;
+          var form = layui.form;
+          table.render({
+              elem: '#report_tab'
+              ,url:"{:url('dsp/report/gettabledata')}"
+              //,where: {forms}
+              ,page: { //支持传入 laypage 组件的所有参数（某些参数除外，如：jump/elem） - 详见文档
+                  layout: ['limit', 'count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
+                  ,limit: 10
+                  ,groups: 1 //只显示 1 个连续页码
+                  ,first: false //不显示首页
+                  ,last: false //不显示尾页
+              }
+              ,id: 'report_tab'
+              ,toolbar: '#toolbarDemo'
+
+              ,defaultToolbar: ['filter', 'exports']
+              ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+              ,cols: [[
+                  {field:'days',title:'日期',sort:true,align:'center'}
+                  ,{field:'cap_name',sort:true,align:'center',title:'推广计划'}
+                  ,{field:'cre_name',sort:true,align:'center',title:'广告名称'}
+                  ,{field:'im',sort:true,align:'center',title:'展示数'}
+                  ,{field:'ck',sort:true,align:'center',title:'点击数'}
+                  ,{field:'ck_rate',sort:true,align:'center',title:'点击率(%)'}
+                  ,{field:'ck_avg',sort:true,align:'center',title:'点击均价(元)'}
+                  ,{field:'cost',sort:true,align:'center',title:'花费(元)'}
+              ]]
+          });
+          var $ = layui.$, active = {
+              reload: function(){
+                var times = $('#test6');
+                var creative_id = $("#creative_id");
+                var campaign_id = $("#campaign_id");
+                var btt = $('#btt')
+                //执行重载
+                table.reload('report_tab', {
+                  page: {
+                    curr: 1 
+                  }
+                  ,where: {
+                   times: times.val(),
+                   creative_id:creative_id.val(),
+                   btt:btt.val(),
+                   campaign_id:campaign_id.val()
+                  }
+                });
+              }
+            };
+          //执行一个laydate实例
+          laydate.render({
+            elem: '#test6'
+            ,range: true
+            ,value :[{$date1}]
+            ,done: function(value, date){
+              $('#test6').val(value);
+               var type = 'reload';
+              active[type] ? active[type].call(this) : '';
+
+              load_ajax();
+            }
+          });
+          form.on('select(fifi)', function(data){
+               load_ajax(data.value)     
+           });
+          form.on('select(creative_id)', function(data){
+              load_ajax();
+              var type = 'reload';
+              active[type] ? active[type].call(this) : '';  
+           });
+          $('#tday').click(function(){
+              $('input[name=btt]').val(1);
+              var type = 'reload';
+              active[type] ? active[type].call(this) : '';
+              load_ajax();
+          })
+          $('#yday').click(function(){
+              $('input[name=btt]').val(2);
+              var type = 'reload';
+              active[type] ? active[type].call(this) : '';
+              load_ajax();
+          })
+          $('#sday').click(function(){
+              $('input[name=btt]').val(3);
+              var type = 'reload';
+              active[type] ? active[type].call(this) : '';
+              load_ajax();
+          })
+          $('#lday').click(function(){
+              $('input[name=btt]').val(4);
+              var type = 'reload';
+              active[type] ? active[type].call(this) : '';
+              load_ajax();
+          })
+                          //排序
+            table.on('sort(report_tab)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+              //尽管我们的 table 自带排序功能，但并没有请求服务端。
+              //有些时候，你可能需要根据当前排序的字段，重新向服务端发送请求，如：
+              table.reload('report_tab', {
+              initSort: obj //记录初始排序，如果不设的话，将无法标记表头的排序状态。 layui 2.1.1 新增参数
+              ,where: { //请求参数
+                 field: obj.field //排序字段
+                ,order: obj.type //排序方式
+              }
+              });
+              return false;
+            });
+          //媒体选择
+          form.on('select(campaign_id)', function(data){
+              load_ajax()
+              var type = 'reload';
+              active[type] ? active[type].call(this) : '';
+                $.ajax({
+                  type:"POST",
+                  url:"{:url('dsp/report/findadvert')}",
+                  data:{'campaign_id':data.value},
+                  success:function(e){
+                      //empty() 方法从被选元素移除所有内容
+                      $("select[name='creative_id']").empty();
+                      var html = "<option value='0'>请选择广告</option>";
+                      $(e.data).each(function (v, k) {
+                          html += "<option value='" + k.id + "'>" + k.name + "</option>";
+                      });
+                      //把遍历的数据放到select表里面
+                      $("select[name='creative_id']").append(html);
+                      //从新刷新了一下下拉框
+                      form.render('select');
+                  }
+              });     
+           });
+
+        });
+</script> 
+<script type="text/javascript">
+
+   $(window).on('load', function() {
+          load_ajax()
+    })
+   function load_ajax(){
+     var myChart = echarts.init(document.getElementById('main'));
+     var chart = $("#isis").val();
+     var times = $('#test6').val();
+     var creative_id = $("#creative_id").val();
+     var campaign_id = $("#campaign_id").val();
+     var btt = $('#btt').val();
+     myChart.showLoading();
+        $.ajax({
+                url:"{:url('dsp/report/getecharts')}",
+                data:{chart:chart,times:times,creative_id:creative_id,btt:btt,campaign_id:campaign_id},
+                type:'post',
+                success:function(res) {
+                  myChart.hideLoading(); 
+                    var option = {
+                            tooltip : {
+                                trigger: 'axis'
+                            },
+                            legend: {
+                                data:[]
+                            },
+                            toolbox: {
+                                show : true,
+                                left: 'center',
+                                feature : {
+                                    mark : {show: true},
+                                    dataView : {show: true, readOnly: true},
+                                    magicType : {show: true},
+                                    restore : {show: true},
+                                    saveAsImage : {show: true}
+                                },
+                                top:['left']
+                            },
+                            calculable : true,
+                            xAxis : [
+                                {
+                                    type : 'category',
+                                    boundaryGap : true,
+                                    data : res.date
+                                }
+                            ],
+                            yAxis : [
+                                {
+                                    name : res.title,
+                                    type : 'value',
+                                }
+                            ],
+                            series : [
+                                {
+                                    name:res.title,
+                                    type:'line',
+                                    stack: '总量',
+                                    data:res.data
+                                }
+                            ]
+                        };
+                        myChart.setOption(option);
+                        $('#test6').val(res.btt);
+                }
+            })
+   }
+    
+
+</script>
+</body>
+</html>

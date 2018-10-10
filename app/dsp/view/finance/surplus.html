@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>layui</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css"  media="all">
+  <link rel="stylesheet" href="__PUBLIC__/font-awesome/css/font-awesome.min.css" media="all" />
+  <link rel="stylesheet" href="__CSS__/admin.css"  media="all">
+  <style type="text/css">
+    #mypage .cur {
+        border: none;
+        background: #009688;
+        color: #fff;
+    }
+    /* tooltip */
+    #tooltip{
+      position:absolute;
+      border:1px solid #ccc;
+      background:#333;
+      padding:2px;
+      display:none;
+      color:#fff;
+    }
+</style>
+</head>
+<body style="padding:10px;">
+  <div class="tplay-body-div"> 
+    <div class="layui-tab layui-tab-card">
+
+      <div class="layui-tab-content" style="height: 500px;" >
+                <form class="layui-form serch" action="{:url('dsp/finance/surplus')}" method="get">
+                    <div class="layui-form-item" style="float: left;">
+                          <div class="layui-input-inline">
+                            <input type="text" class="layui-input" id="times" placeholder="日期" name="day" value="{$search.day}">
+                          </div>
+                          <div class="layui-input-inline">
+                            <input type="text" class="layui-input"  placeholder="请输入账号昵称" name="nickname" value="{$search.nickname}">
+                          </div>
+                      <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="serch">搜索</button>
+                    </div>
+                </form>
+        <div class="layui-tab-item layui-show" style="height: 300px; margin-top: 15px;">
+             <table class="layui-table" lay-skin="line">
+              <thead>
+                 <tr>
+                    <th>账号昵称</th>
+                    <th>现金账户</th>
+                    <th>虚拟账户</th>
+                    <th>今日已消耗</th>
+                    <th>所选日期消耗</th>
+                    <th>当前余额</th>
+                  </tr> 
+              </thead>
+              <tbody>
+             {notempty name="$list"}
+             {volist name="$list" id="vo"}
+                  <tr>
+                    <td>{$vo.nickname}</td>
+                    <td>{$vo.money}</td>
+                    <td>{$vo.vir_money}</td>
+                    <td>{$vo.cost_day}</td>
+                    <td>{$ycost[$vo.uid]}</td>
+                    <td>
+                    {php}
+                    echo sprintf("%.2f", ($vo['money']+$vo['vir_money']-$vo['cost_day']));
+                    {/php}
+                    </td>
+                  </tr>
+              {/volist}
+            {/notempty}
+              </tbody>
+            </table>      
+        </div>
+      </div>
+      <div style="padding:0 20px;" id="mypage">{$list->render()}</div>
+  {include file="public/foot"}
+    </div>
+
+</body>
+<script>
+        layui.use(['laydate','table','form'], function(){
+          var laydate = layui.laydate;
+          var table = layui.table,form=layui.form;
+          var form = layui.form;
+          //执行一个laydate实例
+          laydate.render({
+            elem: '#times'
+            ,range: '~'
+          });
+        });
+</script> 
+</html>
+

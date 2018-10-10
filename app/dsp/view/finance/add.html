@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>layui</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css"  media="all">
+  <link rel="stylesheet" href="__PUBLIC__/font-awesome/css/font-awesome.min.css" media="all" />
+  <link rel="stylesheet" href="__CSS__/admin.css"  media="all">
+  <style type="text/css">
+
+    /* tooltip */
+    #tooltip{
+      position:absolute;
+      border:1px solid #ccc;
+      background:#333;
+      padding:2px;
+      display:none;
+      color:#fff;
+    }
+
+
+</style>
+</head>
+<body style="padding:10px;">
+  <div class="tplay-body-div" > 
+  <form class="layui-form" method="post" action="{:url('dsp/finance/add')}" id="create">
+    <div class="layui-tab layui-tab-brief" style="margin-left: 100px;width: 700px;">
+          <div class="layui-form-item">
+            <label class="layui-form-label">选择账号</label>
+            <div class="layui-input-block">
+              <select name="uid" lay-verify="required" lay-search="">
+                <option value="">请选择账号</option>
+                {volist name="$admin" id="vo"}
+                    <option value="{$vo.id}">{$vo.name}</option>
+                {/volist}
+              </select>
+            </div>
+          </div>
+
+          <div class="layui-form-item">
+            <label class="layui-form-label">选择类型</label>
+            <div class="layui-input-block">
+              <select name="type" lay-verify="required">
+                <option value="0">现金账户</option>
+                <option value="1">虚拟账户</option>
+              </select>
+            </div>
+          </div>
+            
+          <div class="layui-form-item">
+            <label class="layui-form-label">充值金额</label>
+            <div class="layui-input-block">
+              <input name="money" lay-verify="required|number" autocomplete="off" placeholder="请输入充值金额" class="layui-input" type="text">
+            </div>
+          </div>
+
+           <div class="layui-form-item">
+            <div class="layui-input-block">
+              <br>
+              <button class="layui-btn" lay-submit="" lay-filter="create">充值</button>
+            </div>
+           </div>
+    </div>  
+      </form>
+     </div>
+    <div style="padding:0 20px;"></div>
+  {include file="public/foot"}
+</div>
+</body>
+ <script>
+      layui.use(['layer', 'form'], function() {
+          var layer = layui.layer,
+              $ = layui.jquery,
+              form = layui.form;
+          $(window).on('load', function() {
+              form.on('submit(create)', function(data) {
+                layer.confirm('确定要充值？',function(){
+                    $.ajax({
+                        url:"{:url('dsp/finance/add')}",
+                        data:$('#create').serialize(),
+                        type:'post',
+                        async: false,
+                        success:function(res) {
+                            if(res.code == 1) {
+                                layer.alert(res.msg, function(index){
+                                  location.href = res.url;
+                                })
+                            } else {
+                                layer.msg(res.msg);
+                            }
+                        }
+                    })
+                })
+                return false;
+              });
+          });
+      });
+    </script>
+</html>

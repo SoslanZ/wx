@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>layui</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css"  media="all">
+  <link rel="stylesheet" href="__PUBLIC__/font-awesome/css/font-awesome.min.css" media="all" />
+  <link rel="stylesheet" href="__CSS__/admin.css"  media="all">
+  <link rel="stylesheet" type="text/css" href="__CSS__/formSelects-v4.css"/>
+  <style type="text/css">
+    /* tooltip */
+    #tooltip{
+      position:absolute;
+      border:1px solid #ccc;
+      background:#333;
+      padding:2px;
+      display:none;
+      color:#fff;
+    }
+        .layui-table td, .layui-table th{
+      padding: 2px 5px;
+      text-align: center;
+    }
+     .plug-timer-grid{width: 400px;}
+     .plug-timer-grid td, .plug-timer-grid th{border: 1px solid #5FB878;text-align: center; /*cursor:pointer;*/}
+     .Selected{background-color: #5FB878;opacity: 0.5;}
+
+    .plug-timer-grid {
+        border-collapse: collapse;
+        z-index: 4;
+    }
+      .plug-timer-grid thead tr{
+      display: table-row;
+      vertical-align: inherit;
+      border-color: inherit;
+      }
+
+      table td{
+        height: 30px;  
+        max-width: 20px;
+          border: 1px solid #dfe6ec;
+        font-size: 12px;
+        text-align: center;
+        vertical-align: middle;
+        overflow: hidden;
+        transition: background .5s;
+        -webkit-transition: background .5s;
+      }
+</style>
+
+</head>
+<body style="padding:10px;">
+  <div class="tplay-body-div">
+  <form class="layui-form" id="advert" method="post" action="{:url('dsp/advert/editor')}" >
+    <div class="layui-tab">
+      <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+        <div class="layui-tab-content">
+          <div class="layui-tab-item layui-show" style="width: 700px;margin-left: 100px;">
+
+              <div class="layui-form-item">
+                <label class="layui-form-label">广告名称</label>
+                  <div class="layui-input-block">
+                    <input name="name" lay-verify="required" autocomplete="off" placeholder="请输入" class="layui-input" type="text" value="{$list.name}">
+                  </div>
+              </div>
+            
+              <div class="layui-form-item">
+                  <label class="layui-form-label">选择媒体</label>
+                  <div class="layui-input-block">
+                    <input name="type" lay-skin="primary" title="指定小程序" {if condition="$list.type eq 1 || $list.type eq 0"}checked{/if} type="radio" lay-filter="type" value="1">
+                    <input name="type" lay-skin="primary" title="指定分类"  {if condition="$list.type eq 2"}checked{/if} type="radio" lay-filter="type" value="2"> 
+                  </div>
+
+                  <div class="layui-input-block" id="media">
+                    <select name="media_id"  xm-select-search id="media_id" xm-select="wxmedia_id" xm-select-show-count='4' xm-select-max="10" xm-select-search-type="dl">
+                          <option value="">选择小程序</option>
+                      {volist name="$wxmedia" id="vo"}
+                          <option value="{$vo.id}" {$vo.selected}>{$vo.name}</option>
+                      {/volist}
+                    </select>
+                  </div>
+
+                  <div class="layui-input-block" id="type" style="display: none;">
+                    <select name="type_id"  xm-select-search xm-select="type_id" xm-select-show-count='4'  xm-select-search-type="dl">
+                           
+                    </select>
+                  </div>
+              </div>
+            <hr>
+              <label class="layui-form-label">定向人群</label>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">手机系统</label>
+                  <div class="layui-input-block">
+                    <input name="filter_os[]" lay-skin="primary" title="不限" type="checkbox" value="-1" {if condition="$list.filter_os eq -1"}checked{/if} class="filter_s" lay-filter="filter_os" >
+                    <input name="filter_os[]" lay-skin="primary" title="android" type="checkbox" value="4" {if condition="$list.filter_os & 4 && $list.filter_os neq -1"}checked{/if} class="filter_o" lay-filter="filter_os">
+                    <input name="filter_os[]" lay-skin="primary" title="ios" type="checkbox" value="2" {if condition="$list.filter_os & 2 && $list.filter_os neq -1"}checked{/if} class="filter_o" lay-filter="filter_os">
+                  </div>
+              </div>
+
+              <div class="layui-form-item">
+                   <label class="layui-form-label">网络类型</label>
+                    <div class="layui-input-block">
+                      <input name="filter_net[]" lay-skin="primary" title="不限" type="checkbox" value="-1" {if condition="$list.filter_net eq -1"}checked{/if} lay-filter="filter_net" class="filter_one">
+                      <input name="filter_net[]" lay-skin="primary" title="WIFI" type="checkbox" value="2" {if condition="$list.filter_net & 2 && $list.filter_net neq -1"}checked{/if} lay-filter="filter_net" class="filter_ss">
+                      <input name="filter_net[]" lay-skin="primary" title="2G" type="checkbox" value="4" {if condition="$list.filter_net & 4 && $list.filter_net neq -1"}checked{/if} lay-filter="filter_net" class="filter_ss">
+                      <input name="filter_net[]" lay-skin="primary" title="3G" type="checkbox" value="8" {if condition="$list.filter_net & 8 && $list.filter_net neq -1"}checked{/if} lay-filter="filter_net" class="filter_ss">
+                      <input name="filter_net[]" lay-skin="primary" title="4G" type="checkbox" value="16" {if condition="$list.filter_net & 16 && $list.filter_net neq -1"}checked{/if} lay-filter="filter_net" class="filter_ss">
+                    </div>
+              </div>
+
+              <div class="layui-form-item">
+                    <label class="layui-form-label">性别</label>
+                    <div class="layui-input-block">
+                      <input name="filter_sex[]" lay-skin="primary" title="不限"  type="checkbox" value="-1" {if condition="$list.filter_sex eq -1"}checked{/if} lay-filter="filter_sex" class="filter_se">
+                      <input name="filter_sex[]" lay-skin="primary" title="男" type="checkbox" value="2" {if condition="$list.filter_sex & 2 && $list.filter_sex neq -1"}checked{/if} lay-filter="filter_sex" class="filter_x">
+                      <input name="filter_sex[]" lay-skin="primary" title="女" type="checkbox" value="4" {if condition="$list.filter_sex & 4 && $list.filter_sex neq -1"}checked{/if} lay-filter="filter_sex" class="filter_x">
+                      <input name="filter_sex[]" lay-skin="primary" title="未知" type="checkbox" value="1" {if condition="$list.filter_sex & 1 && $list.filter_sex neq -1"}checked{/if} lay-filter="filter_sex" class="filter_x">
+                    </div>
+              </div>
+
+              <div class="layui-form-item">
+                  <label class="layui-form-label">广告样式</label>
+                  <div style="width: 500px; height: 300px;">
+                      <div class="one" style="margin:0; padding:0;float:left;width:200px;height:300px;">
+                           <div style="width: 200px; height: 80px; margin-top: 15px; text-align:center;{if condition='$list.template_id eq 1'} background-color: #5FB878{else /} background-color: #E0E0E0{/if}" >
+                            <br>
+                            <h4>广告样式 Banner广告</h4><br>
+                            <h4>创意样式 <span>582*166px</span></h4>
+                           </div>
+                           <div style="width: 200px; height: 80px; margin-top: 15px; text-align:center; {if condition='$list.template_id eq 2'} background-color: #5FB878{else /} background-color: #E0E0E0{/if}" >
+                            <br>
+                            <h4>广告样式 插屏广告</h4><br>
+                            <h4>创意样式 <span>600*500px</span></h4>
+                          </div>
+                          <div style="width: 200px; height: 80px; margin-top: 15px; text-align:center; {if condition='$list.template_id eq 3'} background-color: #5FB878{else /} background-color: #E0E0E0{/if}" >
+                            <br>
+                            <h4>广告样式 悬浮窗</h4><br>
+                            <h4>创意样式 <span>200*200px</span></h4>
+                          </div>
+                      </div>
+                      <div class="two" style="float:right;width:170px;height:300px; margin-top: 15px;">
+                         <div name="a" style="{if condition='$list.template_id eq 1'}{else /}display: none; {/if}"><img src="__IMAGES__/banner.png" style="width: 170px; height: 280px;"></div>
+                         <div style="{if condition='$list.template_id eq 2'}{else /}display: none; {/if}"  name="b"><img src="__IMAGES__/screen.png" style="width: 170px; height: 280px;"></div>
+                         <div style="{if condition='$list.template_id eq 3'}{else /}display: none; {/if}" name="c"><img src="__IMAGES__/suspend_70.png" style="width: 170px; height: 280px;" ></div>
+                        </div>
+                  </div>
+                  <input type="hidden" name="template_id" value="{$list.template_id}" id="template_id">  
+              </div>
+
+            <h3>投放时间及价格</h3><br>
+              <div class="layui-form-item">
+                <label class="layui-form-label">投放日期</label>
+                    <div class="layui-input-block">
+                        <input name="tou_day" lay-skin="primary" title="长期投放" type="radio" lay-filter="tou_day" value="1" {if condition='$list.tou_day eq 1'} checked {/if}>
+                        <input name="tou_day" lay-skin="primary" title="固定日期投放" type="radio" lay-filter="tou_day" value="2" {if condition='$list.tou_day eq 2'} checked {/if}>
+                    </div>
+
+                    <div class="layui-input-inline">
+                      <input class="layui-input" id="test1"  type="text" name="tou_day_1" value="{$list.start_ts}" autocomplete="off">
+                      <input class="layui-input" id="test6"  type="text" name="tou_day_2" placeholder="~" value="{$list.start_ts} ~ {$list.end_ts}" autocomplete="off">
+                    </div>
+     
+              </div>
+
+              <div class="layui-form-item">
+                  <div class="layui-inline">
+                    <label class="layui-form-label">投放时间</label>
+                      <div class="layui-input-block">
+                        <input name="tou_time" lay-skin="primary" title="全天投放"  type="radio" lay-filter="tou_time" value="1" {if condition='$list.tou_time eq 1'} checked {/if}>
+                        <input name="tou_time" lay-skin="primary" title="特定时间段" type="radio" lay-filter="tou_time" value="2" {if condition='$list.tou_time eq 2'} checked {/if}>
+                      </div>
+                      <div class="layui-input-inline" style="width:800px;" >
+                        <div id="table_time_selected1" class="table_time_selected">
+                          <a class="layui-btn layui-btn-primary layui-btn-xs" style="margin-left: 500px;" href="javascript:void(0);" id="shutem">清空已选时间</a>
+                          <input type="hidden" class="default_time_val" value="{$list.filter_hour}" name="default_time_val">
+                        </div>
+                      </div>
+                  </div>
+              </div>
+
+              <div class="layui-form-item">
+                  <label class="layui-form-label">出价方式</label>
+                  <div class="layui-input-block">
+                    <input name="bid_type" lay-skin="primary" title="CPC" type="radio" value="0" {if condition="$list.bid_type eq 0"}checked{/if}>
+                  </div>
+              </div>
+
+              <div class="layui-form-item">
+                <label class="layui-form-label">出价价格</label>
+                <div class="layui-input-block">
+                  <input name="bid_price" lay-verify="required|number" autocomplete="off" placeholder="请输入(建议出价{$tf}~100元/点击)" class="layui-input" type="text" value="{$list.bid_price}">
+                </div>
+              </div>
+              <h3>上传素材</h3><br>
+
+             <div class="layui-form-item">
+                <label class="layui-form-label">广告图片</label>
+                <div class="layui-input-block">
+                  <button type="button" class="layui-btn" id="pic2">上传图片</button>
+                  <div class="layui-upload-list">
+                    <img class="layui-upload-img" id="img_2"  src="{$list.material.image.main.url}">
+                    <p id="demoText">(图片大小<span id="img_text">582*166px</span>,小于200K,仅支持JPG/PNG格式)</p>
+                  </div>
+                </div>
+                <input type="hidden" name="img_2" value="{$list.material.image.main.url}">
+              </div>
+              
+              <h3>点击后效果</h3><br>
+
+              <div class="layui-form-item">
+                <label class="layui-form-label">选择类型</label>
+                    <div class="layui-input-block">
+                        <input name="clk_type" lay-skin="primary" title="点击展开" type="radio" lay-filter="clk_type" value="1" {if condition='$list.material.interact eq 0'} checked {/if}>
+                        <input name="clk_type" lay-skin="primary" title="点击跳转" type="radio" lay-filter="clk_type" value="2" {if condition='$list.material.interact eq 1'} checked {/if}>
+                    </div>
+              </div>
+
+              <div class="layui-form-item" id="clk_type_1">
+                <label class="layui-form-label">预览图片</label>
+                <div class="layui-input-block">
+                  <button type="button" class="layui-btn" id="pic1">上传图片</button>
+                  <div class="layui-upload-list">
+                    <img class="layui-upload-img" id="img_1" style="width: 128px;height: 227px;" src="{$list.material.image.land.url}">
+                    <p id="demoText">(图片大小640*1136px,小于200K,仅支持JPG/PNG格式)</p>
+                  </div>
+                </div>
+                <input type="hidden" name="img_1"  value="{$list.material.image.land.url}">
+              </div>
+
+
+            <div class="layui-form-item" id="clk_type_2" style="display: none;">
+                <label class="layui-form-label">插屏图片</label>
+                <div class="layui-input-block">
+                  <button type="button" class="layui-btn" id="pic3">上传图片</button>&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" class="layui-btn" id="pic4">上传ICON</button>&nbsp;&nbsp;&nbsp;&nbsp;
+                  <a href="javascript:void(0)"  class="layui-btn show">预览</a>
+                </div><br>
+                <label class="layui-form-label">标题</label>
+                <div class="layui-input-block">
+                    <input name="title"  autocomplete="off" placeholder="请输入" class="layui-input" type="text"  value="{$list.material.text.title}">
+                </div>
+
+                <div class="layui-input-block">
+                  <div class="layui-upload-list">
+                      <img class="layui-upload-img" id="img_3" style="width: 300px;height: 250px;" src="{$list.material.image.deep.url}">
+                      <img class="layui-upload-img" id="img_4" style="width: 50px;height: 50px;" src="{$list.material.image.icon.url}">
+                      <p id="demoText">(图片大小300*250px,小于200K,仅支持JPG/PNG格式)</p>
+                    </div>
+                </div>
+                <input type="hidden" name="img_3" value="{$list.material.image.deep.url}" >
+                <input type="hidden" name="img_4" value="{$list.material.image.icon.url}">
+<!--                 <label class="layui-form-label">简介</label>
+<div class="layui-input-block">
+  <input name="desc"  autocomplete="off" placeholder="请输入" class="layui-input" type="text" lay-verify="desc" value="{$list.material.text.desc}">
+</div><br> -->
+                <label class="layui-form-label">小程序ID</label>
+                <div class="layui-input-block">
+                  <input name="land"  autocomplete="off" placeholder="请输入" class="layui-input" type="text" value="{$list.material.land}">
+                </div><br>
+                <label class="layui-form-label">跳转地址</label>
+                <div class="layui-input-block">
+                  <input name="pages"  autocomplete="off" placeholder="请输入" class="layui-input" type="text" lay-verify="pages" value="{$list.material.pages}">
+                </div>
+            </div>
+
+
+               <input type="hidden" name="id" value="{$list.id}">
+               <div class="layui-form-item">
+                <div class="layui-input-block">
+                  <button class="layui-btn" lay-submit="" lay-filter="advert">提交</button>
+                  <a href="{:url('dsp/advert/index')}" class="layui-btn layui-btn-primary">返回</a>
+                </div>
+              </div>
+
+          </div>
+        </div>
+      </div>  
+     </div>
+          
+      </form>
+     </div>
+       
+    <div style="padding:0 20px;"></div>
+  {include file="public/foot"}
+</div>
+</body>
+</html>
+<script src="__JS__/formSelects.js" type="text/javascript" charset="utf-8"></script>
+<script>
+  var template_id = "{$list.template_id}";
+  var interact = "{$list.material.interact}";
+  if(interact==0){
+    $('#clk_type_1').show();
+    $('#clk_type_2').hide();
+  }
+  if(interact==1){
+    $('#clk_type_1').hide();
+    $('#clk_type_2').show();
+  }
+  if(template_id == 1){
+      var wid = 582;
+      var hei = 166;
+      $('#pic2 span').html("582*166px");
+  }
+  if(template_id == 2){
+      var wid = 600;
+      var hei = 500;
+      $('#pic2 span').html("600*500px");
+  }
+  if(template_id == 3){
+      var wid = 200;
+      var hei = 200;
+      $('#pic2 span').html("200*200px");
+  }
+  if(template_id ==1 || template_id ==3 ){
+      $('#img_2').attr('width',wid);
+      $('#img_2').attr('height',hei);
+  }else{
+      $('#img_2').attr('width',300);
+      $('#img_2').attr('height',250);
+  }
+  var loa = $('.one>div').eq(template_id-1).find('span').html();
+  $('#img_text').html(loa)
+  
+  $('.table_time_selected').hide();
+  var tou_day = "{$list.tou_day}";
+  if (tou_day==1){
+    $('#test1').show();
+    $('#test6').hide();
+  }else{
+    $('#test1').hide();
+    $('#test6').show();
+  }
+  var tou_time ="{$list.tou_time}";
+  if (tou_time ==2){
+    $('.table_time_selected').show();
+  }
+  var type ="{$list.type}";
+  if(type==1){
+    $('#test1').show();
+    $('#test6').hide();
+  }
+  if(type==2){
+    $('#media').hide()
+    $('#type').show()
+  }
+  layui.use(['layer', 'form','upload','formSelects'], function(){
+    var laydate = layui.laydate;
+    var form = layui.form;
+    var upload = layui.upload;
+    var formSelects = layui.formSelects;
+    $('.show').click(function(){
+    var main = $('#img_3').attr('src');
+    var icon = $('#img_4').attr('src');
+    var title = $('input[name=title]').val();
+    layer.open({
+        closeBtn: 0,
+        title:0,
+        btnAlign: 'l',
+        area: ['400px', '500px'], //宽高
+        btn:false,
+        shadeClose:true,
+        content: '<div style="width:300px;height:400px;margin-top:50px;margin-left:20px;"><div style="width:300px;height:250px;"><img src="'+main+'" alt="" onload="scalingImg(this)" width="" height=""></div><div style="display:inline-block;margin-right:20px;"><img src="'+icon+'" alt="" onload="scalingImg(this)" width="" height=""></div><span>'+title+'</span><div style="float:right;"><a href="javascript:void(0)"  class="layui-btn layui-btn-sm layui-btn-normal">立即进入</a></div></div>',
+      })
+    })
+
+    formSelects.render('type_id');
+    formSelects.data('type_id', 'local', {
+    arr: {$new_type}
+});
+    formSelects.value('type_id', {$list.type_val})
+    formSelects.render('wxmedia_id');
+    layui.formSelects.on('type_id', function (id, vals, val, isAdd, isDisabled) {
+        //id:           点击select的id
+        //vals:         当前select已选中的值
+        //val:          当前select点击的值
+        //isAdd:        当前操作选中or取消
+        //isDisabled:   当前选项是否是disabled
+        if (formSelects.isBatch().batch) {
+            return;
+        }
+        //console.log(val)
+        // 创建数组
+        const arr = [];
+        // 获取子权限
+        if (val.children != null && val.children.length > 0) {
+            $.each(val.children, function () {
+                arr.push($(this).attr('value'));
+                if (this.children != null && val.children.length > 0) {
+                    $.each(this.children, function () {
+                        arr.push($(this).attr('value'));
+                    })
+                }
+            })
+        }
+        // // 选择
+        if (isAdd) {
+            str = val.value;
+            // 获取父权限
+            for (let i = 0; str.length !== 1 && i < str.length / 2; i++) {
+                str = str.substr(0, str.length - 2);
+                arr.push(str);
+            }
+            formSelects.value('type_id', arr, true);
+        } else {    //取消
+            formSelects.value('type_id', arr, false);
+        }
+    });
+
+    formSelects.btns('type_id',['select','remove','skin']);
+    formSelects.btns('wxmedia_id',['select','remove','skin']);
+
+    form.on('radio(tou_time)', function(data){
+         if (data.value==1){
+          $('.table_time_selected').hide();
+         }
+         if (data.value==2){
+          $('.table_time_selected').show();
+         }    
+    });
+    form.on('radio(type)', function(data){
+         if(data.value==1){
+          /*formSelects.value('type_id', [0])
+          formSelects.value('wxmedia_id', [0])*/
+           $('#media').show()
+           $('#type').hide()
+         }else{
+          /*formSelects.value('type_id', [0])
+          formSelects.value('wxmedia_id', [0])*/
+           $('#media').hide()
+           $('#type').show()
+         }
+    });
+    form.on('radio(clk_type)', function(data){
+         if (data.value==1){
+          $('#clk_type_1').show();
+          $('#clk_type_2').hide();
+         }
+         if (data.value==2){
+          $('#clk_type_1').hide();
+          $('#clk_type_2').show();
+         }    
+    });
+    form.on('radio(tou_day)', function(data){
+         if (data.value==1){
+          $('#test1').show();
+          $('#test6').hide();
+         }
+         if (data.value==2){
+          $('#test1').hide();
+          $('#test6').show();
+         }    
+    });
+    form.on('checkbox(filter_net)', function(data){
+        if(data.value==-1){
+          $(".filter_ss").prop("checked", false);
+          form.render('checkbox');
+        }
+        if(data.value!=-1){
+          $(".filter_one").prop("checked", false);
+           form.render('checkbox');
+        } 
+    });
+    form.on('checkbox(filter_os)', function(data){
+        if(data.value == -1){
+          $(".filter_o").prop("checked", false);
+          form.render('checkbox');
+        }
+        if(data.value!=-1){
+          $(".filter_s").prop("checked", false);
+           form.render('checkbox');
+        } 
+    });
+    form.on('checkbox(filter_sex)', function(data){
+        if(data.value == -1){
+          $(".filter_x").prop("checked", false);
+          form.render('checkbox');
+        }
+        if(data.value!=-1){
+          $(".filter_se").prop("checked", false);
+           form.render('checkbox');
+        } 
+    });
+    form.on('submit(advert)', function(data) {
+          $.ajax({
+              url:"{:url('dsp/advert/editor')}",
+              data:$('#advert').serialize(),
+              type:'post',
+              async: false,
+              success:function(res) {
+                  if(res.code == 1) {
+                      layer.alert(res.msg, function(index){
+                        location.href = res.url;
+                      })
+                  } else {
+                      layer.msg(res.msg);
+                  }
+              }
+          })
+          return false;
+      });
+    upload.render({
+    elem: '#pic1'
+    ,url: "{:url('dsp/common/upload')}"
+    ,accept :'images'
+    ,data: {type : 1}
+    ,size : 200
+    ,auto: false
+    ,exts: 'jpg|png'
+    ,choose: function(obj){  //上传前选择回调方法
+        $('input[name=img_1]').val('')
+        var flag = true;
+        obj.preview(function(index, file, result){
+            var img = new Image();
+            img.src = result; 
+            img.onload = function () { //初始化夹在完成后获取上传图片宽高，判断限制上传图片的大小。
+                if(img.width ==640 && img.height ==1136){
+                    obj.upload(index, file); //满足条件调用上传方法
+                }else{
+                    flag = false;
+                    layer.msg("您上传的小图大小必须是640*1136px尺寸！");
+                    return false;
+                }
+            }
+            return flag;
+        });
+    }
+    ,done: function(res){
+      if (res.code == 200 ){
+        layer.msg(res.msg,function(){
+          $('input[name=img_1]').val(res.path)
+          $('#img_1').attr("src",res.path);
+        });
+      }else{
+        layer.msg(res.msg);
+      }
+    }
+    });
+    upload.render({
+    elem: '#pic2'
+    ,url: "{:url('dsp/common/upload')}"
+    ,accept :'images'
+    ,data: {type : 2}
+    ,size : 200
+    ,auto: false
+    ,exts: 'jpg|png'
+    ,choose: function(obj){  //上传前选择回调方法
+        $('input[name=img_2]').val('')
+        var flag = true;
+        obj.preview(function(index, file, result){
+            var img = new Image();
+            img.src = result; 
+            img.onload = function () { //初始化夹在完成后获取上传图片宽高，判断限制上传图片的大小。
+                if(img.width ==wid && img.height ==hei){
+                    obj.upload(index, file); //满足条件调用上传方法
+                }else{
+                    flag = false;
+                    layer.msg("您上传的小图大小必须是"+wid+"*"+hei+"尺寸！");
+                    return false;
+                }
+            }
+            return flag;
+        });
+    }
+    ,done: function(res){
+      if (res.code == 200 ){
+        layer.msg(res.msg,function(){
+          $('input[name=img_2]').val(res.path)
+          $('#img_2').attr("src",res.path);
+        });
+      }else{
+        layer.msg(res.msg);
+      }
+    }
+    });
+    upload.render({
+    elem: '#pic3'
+    ,url: "{:url('dsp/common/upload')}"
+    ,accept :'images'
+    ,data: {type : 1}
+    ,size : 200
+    ,auto: false
+    ,exts: 'jpg|png'
+    ,choose: function(obj){  //上传前选择回调方法
+        var flag = true;
+        obj.preview(function(index, file, result){
+            var img = new Image();
+            img.src = result; 
+            img.onload = function () { //初始化夹在完成后获取上传图片宽高，判断限制上传图片的大小。
+                if(img.width ==300 && img.height ==250){
+                    obj.upload(index, file); //满足条件调用上传方法
+                }else{
+                    flag = false;
+                    layer.msg("您上传的小图大小必须是300*250px尺寸！");
+                    return false;
+                }
+            }
+            return flag;
+        });
+    }
+    ,done: function(res){
+      if (res.code == 200 ){
+        layer.msg(res.msg,function(){
+          $('input[name=img_3]').val(res.path)
+          $('#img_3').attr("src",res.path);
+        });
+      }else{
+        layer.msg(res.msg);
+      }
+    }
+    });
+
+upload.render({
+    elem: '#pic4'
+    ,url: "{:url('dsp/common/upload')}"
+    ,accept :'images'
+    ,data: {type : 1}
+    ,size : 200
+    ,auto: false
+    ,exts: 'jpg|png'
+    ,choose: function(obj){  //上传前选择回调方法
+        var flag = true;
+        obj.preview(function(index, file, result){
+            var img = new Image();
+            img.src = result; 
+            img.onload = function () { //初始化夹在完成后获取上传图片宽高，判断限制上传图片的大小。
+                if(img.width ==40 && img.height ==40){
+                    obj.upload(index, file); //满足条件调用上传方法
+                }else{
+                    flag = false;
+                    layer.msg("您上传的小图大小必须是40*40px尺寸！");
+                    return false;
+                }
+            }
+            return flag;
+        });
+    }
+    ,done: function(res){
+      if (res.code == 200 ){
+        layer.msg(res.msg,function(){
+          $('input[name=img_4]').val(res.path)
+          $('#img_4').attr("src",res.path);
+        });
+      }else{
+        layer.msg(res.msg);
+      }
+    }
+    });
+    //常规用法
+    laydate.render({
+      elem: '#test1',
+      min:minDate()
+    });
+    //日期范围
+    laydate.render({
+      elem: '#test6'
+      ,range: '~',
+      min:minDate()
+      ,btns:['confirm','clear']
+    });
+
+    function minDate(){
+    var now = new Date();
+    return now.getFullYear()+"-" + (now.getMonth()+1) + "-" + now.getDate();
+  
+    }
+    $('#shutem').click(function(){
+      $('.Selected').removeClass();
+      $('#table_time_selected1_time_seled').children().remove();
+      $('#table_time_selected1_time_num').attr('value','0')
+    })
+  });
+  $('.one>div').off().click();
+  $('.one>div').click(function(){
+    var mIndex=$(this).index('.one>div');
+    $(this).css('background-color','#5FB878');
+    $(this).siblings().css('background-color','#E0E0E0');
+    $('#template_id').attr('value',mIndex+1);
+    $('.two>div').hide().eq(mIndex).show();
+    var pxpx = $('.one>div').eq(mIndex).find('span').html();
+    $('#img_text').html(pxpx)
+    $('input[name=img_2]').val('')
+    $('#img_2').attr("src",'');
+    //重新加载图片上传
+    if(mIndex+1 == 1){
+      wid = 582;
+      hei = 166;
+    }
+    if(mIndex+1 == 2){
+      wid = 600;
+      hei = 500;
+    }
+    if(mIndex+1 == 3){
+      wid = 200;
+      hei = 200;
+    }
+    if(mIndex+1==1 || mIndex+1==3){
+      $('#img_2').attr('width',wid);
+      $('#img_2').attr('height',hei);
+    }else{
+      $('#img_2').attr('width',300);
+      $('#img_2').attr('height',250);
+    }
+    $('#img_2').attr('src','');
+    $('input[name=img_2]').val('');
+  })
+</script>
+<script type="text/javascript">
+var box_id;
+var StartTD = null;
+var StartIndex = null;
+var EndTD = null;
+var EndIndex = null;
+var Selected = 'Selected';
+var Start_x = null;
+var Start_y = null;
+//点击中表格的小时值
+var hour;   
+//点击选中的星期值
+var week;   
+//1为这个格子在此次鼠标拖拽过程中被选中（不执行选中方法），0为没选中过
+var td_state = 0;   
+//生成星期数组
+var num = ['一','二','三','四','五','六','日'];
+//生成时间值数组
+var arr_hour = get_hour_arr();
+
+
+//按下鼠标左键拖动选中单元格
+function SelectTD(StartIndex, EndIndex,Selected) {
+
+    var MinX = null;
+    var MaxX = null;
+    var MinY = null;
+    var MaxY = null;
+
+    var coordinate = get_coordinate(StartIndex, EndIndex);
+    MinX = coordinate[0];
+    MaxX = coordinate[1];
+    MinY = coordinate[2];
+    MaxY = coordinate[3];
+
+    for (var i = MinY; i <= MaxY; i++) {
+
+        for (var j = MinX; j <= MaxX; j++) {
+
+            var SelectTR = $('#' + box_id + ' table tbody tr ').eq(i);
+            var td_class = $("td", SelectTR).eq(j).attr('class');
+            td_state = $("td", SelectTR).eq(j).attr("td_state");
+
+            //在同一次鼠标按下的过程中，选中过的表格不进行选中或取消操作
+            if (!td_state) {
+                if (td_class == Selected) {
+                    $("td", SelectTR).eq(j).removeClass(Selected);
+                }else{
+                    //筛选掉标明为星期的表格
+                    $("td", SelectTR).eq(j).attr("class", Selected);
+                }
+                $("td", SelectTR).eq(j).attr("td_state", '1');
+            }
+
+        }
+
+    }
+
+    //改变二进制值
+    get_time_val();
+    //改变日期显示
+    convert_date();
+
+}
+
+//点击选中或去掉选中整行、整列
+function SelectTD_click(StartIndex, EndIndex,Selected) {
+
+    var MinX = null;
+    var MaxX = null;
+    var MinY = null;
+    var MaxY = null;
+    var Selected_true = 0;
+    var Selected_false = 0;
+
+    var coordinate = get_coordinate(StartIndex, EndIndex);
+    MinX = coordinate[0];
+    MaxX = coordinate[1];
+    MinY = coordinate[2];
+    MaxY = coordinate[3];
+
+    //列出此列当中的表格选中状态
+    for (var i = MinY; i <= MaxY; i++) {
+
+        for (var j = MinX; j <= MaxX; j++) {
+
+            var SelectTR = $('#' + box_id + ' table tbody tr ').eq(i);
+            var td_class = $("td", SelectTR).eq(j).attr('class');
+
+            if (td_class == Selected) {
+                //表格里存在已选中的元素
+                Selected_true = 1;
+            }else{
+                //表格里存在未选中的元素
+                Selected_false = 1;
+            }
+
+        }
+
+    }
+
+    //执行选中或去掉选中方法
+    for (var i = MinY; i <= MaxY; i++) {
+
+        for (var j = MinX; j <= MaxX; j++) {
+
+            var SelectTR = $('#' + box_id + ' table tbody tr ').eq(i);
+            var td_class = $("td", SelectTR).eq(j).attr('class');
+
+            //一列当中存在已选中与未选中的表格处理:整列全部选中
+            if (Selected_true == 1 && Selected_false == 1) {
+                $("td", SelectTR).eq(j).attr("class", Selected);
+            }else if(Selected_false == 1){
+            //一列当中只存在未选中的表格处理:整列全部选中    
+                $("td", SelectTR).eq(j).attr("class", Selected);
+            }else{
+            //一列当中只存在已选中的表格处理:整列全部去掉选中
+                $("td", SelectTR).eq(j).removeClass(Selected);
+            }
+
+        }
+
+    }
+
+    //改变二进制值
+    get_time_val();
+    //改变日期显示
+    convert_date();
+
+}
+
+//获取选中范围的开始与结束的坐标
+function get_coordinate(StartIndex, EndIndex){
+    var MinX = null;
+    var MaxX = null;
+    var MinY = null;
+    var MaxY = null;
+
+    if (StartIndex.x < EndIndex.x) {
+        MinX = StartIndex.x; MaxX = EndIndex.x;
+    }else {
+        MinX = EndIndex.x; MaxX = StartIndex.x;
+    }
+    if (StartIndex.y < EndIndex.y) {
+        MinY = StartIndex.y; MaxY = EndIndex.y;
+    } else {
+        MinY = EndIndex.y; MaxY = StartIndex.y;
+    }
+    return [MinX, MaxX, MinY, MaxY];
+}
+
+//改变二进制值
+function get_time_val(){
+    var time_type = '';
+    $('#' + box_id + ' table tbody').find('td').each(function(k){
+        var Selected_type = $(this).attr('class');
+        var week = $(this).attr('week');
+
+        if (Selected_type == Selected && !week) {
+            time_type +="1";
+        }else if(!week){
+            time_type +="0";
+        }
+
+    });
+    $('#'+box_id+'_time_num').val(time_type);
+    // convert_date();
+}
+
+//二进制数转换日期
+function convert_date(external_binary){
+    //初始化周数数组
+    var time_week_arr = [];
+    if (!external_binary) {
+        //内部调用，进行选中表格和输出时间操作。
+        var binary = $('#'+box_id+'_time_num').val();
+    }else{
+        //存在外部参入传入，此函数进行返回时间操作。
+        var date_html = '';
+        var binary = external_binary;
+    }
+
+    for (var y = 0; y < 7; y++) {
+    //初始化小时数组
+    var time_hour_arr = [];
+
+        for (var x = 0; x < 48; x++) {
+
+            //获取当前点击元素的位置
+            if (y==0) {
+                var index = x;
+            }else{
+                var index = (y*48)+x;
+            }
+            
+            //获取td对应的二进制值
+            var Selected_val = binary.charAt(index);
+
+            if (Selected_val ==1) {
+            //组装保存进数组里
+                if (time_hour_arr == []) {
+                //表格的第一个位置的值
+                    time_hour_arr = arr_hour[x];
+                }else if(binary.charAt(index-1) == 1 && binary.charAt(index-2) == 1 ){
+                //此位置（包含上一行）的前两个都为选中时
+
+                    if (x==0 && binary.charAt(index+1) == 0) {
+                    //选中行里第一个，后一个表格没选中，加逗号
+                        time_hour_arr[time_hour_arr.length] = arr_hour[x] + ', ';
+                    }else if(x==0 && binary.charAt(index+1) == 1){
+                    //选中行里第一个，后一个表格已选中，不加逗号
+                        time_hour_arr[time_hour_arr.length] = arr_hour[x];
+                    }else if(x==1 && binary.charAt(index-1) == 0){
+                    //选中行里第二个，上一个表格没选中，加逗号
+                        time_hour_arr[time_hour_arr.length] = arr_hour[x] +', ';
+                    }else if(x==1 && binary.charAt(index-1) == 1){
+                    //选中行里第二个，上一个表格已选中，前加-号，后加逗号
+                        time_hour_arr[time_hour_arr.length] = '-' + arr_hour[x] +', ';
+                    }else{
+                    //选中行里除第一、二的表格以外，前一个表格已经选中，此元素前加- 后加逗号
+                        time_hour_arr[time_hour_arr.length-1] = '-' + arr_hour[x] +', ';
+                    }
+                    
+                }else if(binary.charAt(index-1) == 1 && x>0){
+                //选中的前一个已选中，且此次选中的不是行里第一个，此次选中的元素前加-后加逗号
+                    time_hour_arr[time_hour_arr.length] = '-' + arr_hour[x] + ', ';
+                }else if(binary.charAt(index+1) != 1 || x==47){
+                //选中的后一个没选中，或者此次选中的是行里最后一个，此次选中的元素加逗号
+                    time_hour_arr[time_hour_arr.length] = arr_hour[x] + ', ';
+                }else{
+                //选中的后一已选中，此次选中的元素不加逗号
+                    time_hour_arr[time_hour_arr.length] = arr_hour[x] ;
+                }
+
+            }
+            
+        }
+        
+        time_week_arr[y] = time_hour_arr;
+
+    }
+// console.info(box_id);
+    if (!external_binary) {
+        $('#'+box_id+'_time_seled').html('');
+    }
+    //再次组装并输出数组
+    var time_html = [];
+    for(var y = 0; y < 7; y++){
+
+        for(var x = 0; x < time_week_arr[y].length; x++){
+
+            if (!time_html[y]) {
+                time_html[y] = time_week_arr[y][x];
+            }else{
+                time_html[y] += time_week_arr[y][x];
+            }
+
+        }
+
+        if (time_html[y]) {
+            time_html[y]=  time_html[y].substring(0,time_html[y].length-2);
+
+            if (!external_binary) {
+                $('#'+box_id+'_time_seled').append('<div>星期'+num [y] + ' (' +time_html[y] + ')' + '</div>');
+            }else{
+                date_html += '星期'+num [y] + ' (' +time_html[y] + ')' + ', ';
+            }
+
+        }
+
+    }
+
+    if (external_binary) {
+        return date_html;
+    }
+    // console.info(time_html);
+}
+
+//生成时间值数组
+function get_hour_arr(){
+    var arr_hour = [];
+    var oDate = new Date("2016/07/01 00:00:00"); //实例一个时间对象；
+    var oDate_hour = oDate.getHours();
+    var oDate_minute = oDate.getMinutes();
+    for(i=0; i<48; i++){
+        if(oDate_minute<10){
+                var oDate_minute = "0"+oDate_minute;
+            }
+        if (i >=1) {
+            oDate.setMinutes(oDate.getMinutes() + 30);
+            oDate_hour = oDate.getHours();
+            oDate_minute = oDate.getMinutes();
+            if(oDate_minute<10){
+                var oDate_minute = "0"+oDate_minute;
+            }
+        }
+        arr_hour[i] = oDate_hour + ':' + oDate_minute;
+        // alert(oDate_hour + ':' + oDate.getMinutes());
+    }
+    return arr_hour;
+}
+
+//更新操作
+function renewal(id){
+    if (id) {
+        box_id = id;
+    }
+    //解绑鼠标移动监听事件
+    $('#' + box_id + ' table tbody tr td').unbind("mouseover"); 
+    //初始化表格的在此次选中状态
+    $('#' + box_id + ' table tbody tr td').attr("td_state", '');
+    //改变二进制值
+    get_time_val();
+    //改变日期显示
+    convert_date();
+}
+
+//二进制数赋值选中表格
+function binary_selected(){
+    var default_time_val = $('#'+box_id+' .default_time_val').val();
+    if (default_time_val) {
+        for(i=0 ; i<336; i++){
+            var td_selected = default_time_val.charAt(i);
+            if (td_selected != 0 ) {
+                $('#' + box_id + ' table tbody tr td').eq(i).attr('class','Selected');
+                //更新操作，显示文字形日期
+                renewal();
+            }
+                
+        }
+    }
+}
+
+
+//实例化程序
+function load_time_table(id){
+    //包住table的元素id
+    box_id = id;
+    var html;
+    html = '<table cellspacing="0" cellpadding="0" border="0" class="plug-timer-grid layui-table"  onselectstart="return false" onselect="document.selection.empty()">';
+    html += '<thead>';
+    html += '<tr>';
+    html += '<th ></th>';
+    html += '<th colSpan="24">上午</th>';
+    html += '<th colSpan="24">下午</th>';
+    html += '</tr>';
+    html += '<tr class="hour">';
+    html += '<th></th>';
+    html += '</tr>';
+    html += '</thead>';
+    html += '<tbody></tbody>';
+    html += '</table>';
+    html += '<input class="focus" style="opacity: 0;">';
+    html += '<div id="'+box_id+'_time_seled"></div>';
+    html += '<input type="hidden" id="'+box_id+'_time_num" name="filter_hour" caption="每日投放时段" switchname="selectTime"  value="">';
+    $('#'+box_id).append(html);
+
+    var html_tbody_td = '';
+    var html_thead_td = '';
+
+    //创建表格
+    for (var i = 0; i < 7; i++) {
+        var week = i+1;
+        html_tbody_td += '<tr>';
+        for (var j = 0; j < 49; j++){ 
+            if (j==0) {
+                html_tbody_td += '<th week="'+week+'">周' + num[i] +  '</th>';
+            }else{
+                html_tbody_td += '<td style="width:20px;">'  +  '</td>';
+            }
+        }
+        html_tbody_td += '</tr>';
+    }
+
+    //创建表格小时栏目
+    for(var i =0; i<= 23; i++){
+        html_thead_td += '<td colSpan="2" hour="'+i+'">'+ i + '</td>';
+    }
+    $('#' + box_id + ' table thead .hour').append(html_thead_td);
+    $('#' + box_id + ' table tbody').html(html_tbody_td);
+
+    //检查是否有赋有二进制值，如有，将选中相应的表格
+    binary_selected();
+
+    //控制器，控制当前在哪个表格进行操作
+    $('.plug-timer-grid').hover(function (e) {
+        if(1 != e.which){    //判断是否为左击
+            var id = $(this).parent().attr('id');
+            box_id = id;
+        }
+    });
+
+    //清除所有选中项
+    $('.clear').click(function(){
+        $(this).parent().find('td').removeClass(Selected);
+        var id =$(this).parent().attr('id');
+        renewal(id);
+    });
+
+    //点击小时选中或去掉整列处理块
+    $('#' + box_id + ' table thead tr td').click(function(){
+        hour = $(this).attr('hour');
+        if (hour>=0) {
+            var rows = $('#' + box_id + ' table tbody tr').length;
+            Start_x = ($(this).index())*2-1;
+            Start_y = 0;
+
+            StartIndex = { x: Start_x, y: Start_y };
+
+            EndTD = $(this);
+            var x = ($(this).index())*2-2;
+            var y = rows -1;    //为了配合for计算公式-1
+            
+            EndIndex = { x: x, y: y };
+            //改变第一次按下鼠标时候的改变选中状态
+            SelectTD_click(StartIndex, EndIndex, Selected); 
+        }
+    });
+
+    //点击星期选中或去掉整行处理块
+    $('#' + box_id + ' table tbody tr th').click(function(){
+        var week = $(this).attr('week');
+        if (week>=0) {
+            var line = $('#' + box_id + ' table tbody tr td').length/$('#' + box_id + ' table tbody tr').length;
+
+            Start_x = 0;
+            Start_y = $(this).parent().index();
+
+            StartIndex = { x: Start_x, y: Start_y };
+
+            EndTD = $(this);
+            var y = $(this).parent().index();
+            var x = line-1;     //为了配合for计算公式-1
+            
+            EndIndex = { x: x, y: y };
+
+            //改变第一次按下鼠标时候的改变选中状态
+            SelectTD_click(StartIndex, EndIndex, Selected); 
+        }
+    });
+
+    //监听鼠标按下事件(鼠标按下左键拖动选中处理块)
+    $('#' + box_id + ' table tbody tr td').unbind("mousedown").bind("mousedown", function () {
+        //记录刚开始点击的元素位置
+        Start_x = $(this).index()-1;
+        Start_y = $(this).parent().index();
+        StartIndex = { x: Start_x, y: Start_y };
+
+        EndTD = $(this);
+        var x = $(this).index()-1;
+        var y = $(this).parent().index();
+        EndIndex = { x: x, y: y };
+        //改变第一次按下鼠标时候的改变选中状态
+        SelectTD(StartIndex, EndIndex, Selected); 
+                
+        StartTD = $(this);
+
+        StartIndex = { x: Start_x, y: Start_y };                    
+        
+        //监听鼠标移动事件，实现改变后续鼠标拖拽时候的表格选中状态
+        $('#' + box_id + ' table tbody tr td').mouseover(function(e){
+            EndTD = $(this);
+            var x = $(this).index()-1;
+            var y = $(this).parent().index();
+            EndIndex = { x: x, y: y };
+            if(1 != e.which){    //判断是否为左击
+                $('#' + box_id + ' table tbody tr td').unbind("mouseover"); 
+            }
+            //去除停留在td上的光标
+            $('#' + box_id + ' .focus').focus();
+            SelectTD(StartIndex, EndIndex, Selected); 
+        });
+        
+
+        //放开鼠标左键时，初始化相关参数和解绑相关监听
+        $('html').unbind("mouseup").bind("mouseup", function () {
+            renewal();
+        });
+
+    });
+
+}
+
+/*外部调用接口*/
+
+//解绑鼠标松开监听事件
+function unbundle_mouseover(){
+    $('html').unbind("mouseup");
+}
+
+/*二进制获取转换后的时间*/
+function get_time_html(binary){
+    return convert_date(binary);
+}
+
+    $(function(){
+      load_time_table('table_time_selected');
+      load_time_table('table_time_selected1');
+    });
+  
+</script>
+

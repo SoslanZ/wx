@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>旗鱼广告</title>
+<!--bootstarp-css-->
+<link href="__CSS__/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
+<!--/bootstarp-css -->
+<!--css-->
+<link rel="stylesheet" href="__CSS__/style.css" type="text/css" media="all" />
+<!--/css-->
+<!--fonts-->
+<link href='https://fonts.googleapis.com/css?family=Lato:100,300,400,700,900,100italic,400italic,700italic' rel='stylesheet' type='text/css'>
+<script src="__JS__/jquery.min.js"></script>
+<!--/js-->
+ <!---- start-smoth-scrolling---->
+<script type="text/javascript" src="__JS__/move-top.js"></script>
+<script type="text/javascript" src="__JS__/easing.js"></script>
+</head>
+<body>
+<!--Header-->  
+<div class="header"> 
+<div class="higher">
+	<div class="container">	
+		<div class="header-info">
+			<div class="logo">
+				<h1><span><img src="__IMAGES__/logo.png" alt="" style="height: 61px;width: 509px;"></span></h1>
+			</div>
+				<div class="header-right">
+							 <div class="navigation">
+									<ul style="margin-top: 31px;">
+										<li><a class="scroll" href="{:url('index/index/index')}" title="HOME"><span style="font-size: 16px;">首页</span></a></li>
+										<li><a class="scroll" href="{:url('index/index/advertisement')}" title="PRICING"><span style="font-size: 16px;">广告投放</span></a></li>
+										<li><a class="scroll" href="{:url('index/index/flow')}" title="FAQ"><span style="font-size: 16px;">流量变现</span></a></li>
+										<li><a class="scroll" href="{:url('ssp/index/index')}" title="login"><span style="font-size: 16px;">登录注册</span></a></li>
+									</ul>
+									<div class="clearfix"> </div>
+							</div>
+				</div>
+				<div class="clearfix"> </div>
+		</div>
+	</div>
+</div>	
+	<div class="vivamus" style="text-align: center;color: #ffffff;">
+		<p style="font-weight: 300px;font-size: 33px;padding: 0;margin-top: 150px;">中国最为专注的小程序联盟</p>
+			<span style="font-size: 50px; padding-top: 19px;">微信小程序推广和变现平台</span><br><br>
+			<span style="font-size: 25px;">广告主：通过旗鱼平台投放广告获取优质用户</span><br>
+			<span style="font-size: 25px;">媒体主：通过旗鱼平台接入广告获取广告收益</span>
+
+	</div>
+</div>
+<!--/header-->
+<!--pricing background-image: url('./images/header-banner.jpg'); -->
+<div  class="pricing" style="background-image: url('__IMAGES__/blue.png');margin-top: 0px; height: 300px;">
+
+		<div style="display: inline-block;width: 400px;text-align: left;color: #fff;vertical-align: middle;margin-top: 100px;">
+			<span style="font-size: 18.63px;">
+				20+
+			</span><br>
+			<span style="font-size: 16px;">
+				<span style="font-size: 25px;">移动领域精英</span><br>原腾讯Ad Exchange核心团队成员
+			</span>
+		</div>
+
+		<div style="display: inline-block;width: 400px;text-align: left;color: #fff;vertical-align: middle;margin-top: 100px;">
+			<span style="font-size: 18.63px;">
+				5000万+
+			</span><br>
+			<span style="font-size: 16px;">
+				<span style="font-size: 25px;">日均可覆盖小程序用户</span><br>基于微信九亿日活用户量
+			</span>
+		</div>
+
+		<div style="display: inline-block;width: 400px;text-align: left;color: #fff;vertical-align: middle;margin-top: 100px;">
+			<span style="font-size: 18.63px;">
+				1000+
+			</span><br>
+			<span style="font-size: 16px;">
+				<span style="font-size: 25px;">稳健广告主</span><br>中国最早探索社交营销的程序化交易平台
+			</span>
+		</div>		
+</div>
+<input type="hidden" name="bann" id="bann" value="1">
+<div style="background-image: url('__IMAGES__/1.png');height: 809px;background-size:100% 100%;" id="one">
+	<div style="height: 195px; width: 100%;">
+		<p style="text-align: center;padding-top: 60px; font-size: 50px; color: #0aaae3;">丰富的广告形式</p>
+	</div>
+	<div style="width: 100%; height: 106px;"></div>
+	<div style="width: 100%; height: 508px; padding-left: 675px; padding-top: 110px;">
+		<p style="font-size: 33.33px; color: #000000;margin-left: 25%">Banner广告</p>
+		<p style="font-size: 16.67px; color: #000000;margin-left: 25%">展现场景：小程序首页、详情页等主要页面</p>
+		<p style="font-size: 16.67px; color: #000000;margin-left: 25%">尺寸：200×200</p>
+		<p style="font-size: 16.67px; color: #000000;margin-left: 25%">计费方式：CPC</p>
+	</div>
+</div>
+<div style="background-image: url('__IMAGES__/2.png');height: 809px;background-size:100% 100%;display: none;"  id="two">
+	<div style="height: 195px; width: 100%;">
+		<p style="text-align: center;padding-top: 60px; font-size: 50px; color: #0aaae3;">丰富的广告形式</p>
+	</div>
+	<div style="width: 100%; height: 106px;"></div>
+	<div style="width: 100%; height: 508px; padding-left: 675px; padding-top: 110px;">
+		<p style="font-size: 33.33px; color: #000000;margin-left: 25%">插屏广告</p>
+		<p style="font-size: 16.67px; color: #000000;margin-left: 25%">展现场景：小程序首页、详情页等主要页面</p>
+		<p style="font-size: 16.67px; color: #000000;margin-left: 25%">尺寸：200×200</p>
+		<p style="font-size: 16.67px; color: #000000;margin-left: 25%">计费方式：CPC</p>
+	</div>
+</div>
+<div style="background-image: url('__IMAGES__/3.png');height: 809px;background-size:100% 100%;display: none;" id="three">
+	<div style="height: 195px; width: 100%;">
+		<p style="text-align: center;padding-top: 60px; font-size: 50px; color: #0aaae3;">丰富的广告形式</p>
+	</div>
+	<div style="width: 100%; height: 106px;"></div>
+	<div style="width: 100%; height: 508px; padding-left: 675px; padding-top: 110px;">
+		<p style="font-size: 33.33px; color: #000000;margin-left: 25%">浮层广告</p>
+		<p style="font-size: 16.67px; color: #000000;margin-left: 25%">展现场景：小程序首页、详情页等主要页面</p>
+		<p style="font-size: 16.67px; color: #000000;margin-left: 25%">尺寸：200×200</p>
+		<p style="font-size: 16.67px; color: #000000;margin-left: 25%">计费方式：CPC</p>
+	</div>
+</div>
+<!-- <div  class="contact-us" style="width: 100%;height: 500px;background-image: url('./images/1.png');margin-top: 0px;">
+
+</div> -->
+
+<div class="pricing" style="background-image: url('__IMAGES__/two.png');margin-top: 0px;margin-bottom: 0px;">
+
+		<div style="height: 350px;display: inline-block;width: 100%;padding:100px 0px;">
+			<span style="font-size: 60px;">
+				1x1的营销服务支持x24小时
+			</span><br><br>
+			<span style="font-size: 25px;">
+				快速解答客户在小程序广告投放中的疑惑
+			</span>
+		</div>
+
+</div>
+
+<div  class="contact-us" style="width: 100%;height: 500px;margin-top: 0px;padding:0px;text-align: none;">
+	<div style="text-align: center;">
+	<div style="height: 600px;display: inline-block;position:relative;margin-right: 20px; margin-top: 30px;">
+		<img src="__IMAGES__/img3.png" alt="" style="margin-top: 25px;">
+	</div>
+	<div style="height: 500px;display: inline-block;position:absolute; margin-top: 30px;">
+		<div style="text-align: left;">
+	    <span style="color: #0aaae3;font-size: 40px;">为广告主提供</span>
+	    <h5 style="padding: 5px;font-weight:bold;font-size: 20px; margin-top: 25px;">*不同行业小程序流量资源</h5>
+	    <h5 style="padding: 5px;font-weight:bold;font-size: 20px;">*不同维度投放定向</h5>
+	    <h5 style="padding: 5px;font-weight:bold;font-size: 20px;">*防作弊体系,保证数据真实有效</h5>
+	    </div>
+	    <div style="margin-top: 100px;text-align: left;">
+	    <span style="color: #0aaae3;font-size: 40px;margin-top: 100px; ;">为流量主提供</span>
+	    <h5 style="padding: 5px;font-weight:bold;font-size: 20px; margin-top: 25px">*专业.便捷.高效的广告位管理</h5>
+	    <h5 style="padding: 5px;font-weight:bold;font-size: 20px;">*优质广告主资源智能化.自动化匹配</h5>
+	    <h5 style="padding: 5px;font-weight:bold;font-size: 20px;">*快速审核结算的收益管理平台</h5>
+	    </div>
+	</div>
+	</div>
+</div>
+
+
+<div class="footer">
+	<div class="container">
+		<div class="footer-nav" style="text-align: left;">
+			<div style="display: inline-block;height: 200px;position:relative; margin-left: 150px; margin-right: 206px;">
+				<p style="color: #fff;font-size: 25px;">联系方式</p>
+				<p style="color: #fff;font-size: 16.67px;font-weight: 0px;margin-top: 29px;">服务热线</p>
+				<p style="color: #0aaae3;font-size: 16.67px; margin-top: 27px;">021-3230-9391-826</p>
+			</div>
+
+			<div style="display: inline-block;text-align: left;height: 200px;position:absolute;">
+				<p style="color: #fff;font-size: 25px;margin-top: 5px; margin-bottom: 32px;">合作媒体</p>
+				<img src="__IMAGES__/media_2.png" alt="" style="margin-right: 46px;height: 50px;">
+				<img src="__IMAGES__/media_3.png" alt="" style="margin-right: 47px;height: 50px;">
+				<img src="__IMAGES__/media_1.png" alt="" style="height: 50px;">
+			</div>
+		</div>
+		<div class="copy-rights" style="height: 50px; width: 100%;">
+			<p style="font-size: 16.67px; color:  #CCCCCC;"> 2018@xmadx.com 北京阿拉丁未来科技有限责任公司版权所有 xxxxx</p>
+		</div>
+	</div>
+</div>
+</body>
+<script type="text/javascript">
+$(function(){
+	window.setInterval(swoing, 3000);
+	function swoing(){
+		var id = $('#bann').val();
+		if(id == 1){
+			$('#one').show();
+			$('#two').hide();
+			$('#three').hide();
+			$('#bann').val(2)
+		} else if (id == 2) {
+			$('#one').hide();
+			$('#two').show();
+			$('#three').hide();
+			$('#bann').val(3)
+		} else {
+			$('#one').hide();
+			$('#two').hide();
+			$('#three').show();
+			$('#bann').val(1)
+		}
+	}
+});	
+
+</script>
+</html>

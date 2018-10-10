@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>layui</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/font-awesome/css/font-awesome.min.css" media="all" />
+  <link rel="stylesheet" href="__CSS__/admin.css"  media="all">
+  <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+</head>
+<body>
+<!-- <div class="layui-form-item">
+              <label class="layui-form-label">发票抬头</label>
+              <div class="layui-input-inline">
+                <input name="name"  placeholder="请输入" autocomplete="off" class="layui-input" type="text" value="上海麦晗科技有限公司" disabled="disabled">
+              </div>
+            </div> -->
+          <div class="layui-tab">
+            <div class="layui-tab-item layui-show">
+              <div class="layui-form-item">
+                <label class="layui-form-label">企业名称</label>
+                <div class="layui-input-inline">
+                  <input name="name"  placeholder="请输入" autocomplete="off" class="layui-input" type="text" value="上海麦晗科技有限公司" disabled="disabled">
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">营业执照</label>
+                <div class="layui-input-inline">
+                  <label class="layui-form-label"></label>
+                  <img class="layui-upload-img" id="demo1" width="150" height="150" {notempty name="$info.admin.thumb"}src="{$info.admin.thumb|geturl}"{/notempty}>
+                  <p id="demoText"></p>
+                </div>
+              </div>
+              <div class="layui-form-item">
+              <label class="layui-form-label">法人身份证</label>
+                <div class="layui-input-inline">
+                  <label class="layui-form-label"></label>
+                  <img class="layui-upload-img" id="demo1" width="150" height="150" {notempty name="$info.admin.thumb"}src="{$info.admin.thumb|geturl}"{/notempty}>
+                  <p id="demoText"></p>
+                </div>
+            </div>
+          </div>
+        </div>
+         
+ 
+<script src="//res.layui.com/layui/dist/layui.js" charset="utf-8"></script>
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+<script>
+ 
+</script>
+
+</body>
+</html>

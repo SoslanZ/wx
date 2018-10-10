@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>tplay_main</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <script src="__PUBLIC__/echarts/echarts.min.js"></script>
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/font-awesome/css/font-awesome.min.css" media="all">
+  <link rel="stylesheet" href="__CSS__/admin-1.css" media="all">
+<body class="layui-layout-body" style="overflow-y:visible;">
+<div class="tplay-body-div">
+  <div class="layui-card-header">最新数据（当日数据仅供参考，请以隔天数据为准）</div>
+    <div class="layui-card-body">
+       <form class="layui-form serch" action="{:url('ssp/main/index')}" method="post" id="fofo">
+          
+        
+      <div class="layui-carousel layadmin-backlog"  lay-indicator="inside" lay-arrow="none" style="width: 100%;margin-left: 50px;">
+          <ul class="layui-row layui-col-space10 layui-this">
+            <li class="layui-col-xs6" style="width: 400px;">
+              <a lay-href="" class="layadmin-backlog-body">
+                <h3>昨日预估收入</h3>
+                <p><cite>{empty name="$list.y_income"}0{else /}{$list.y_income}{/empty}</cite></p>
+              </a>
+            </li>
+            <li class="layui-col-xs6" style="width: 400px;">
+              <a lay-href="" class="layadmin-backlog-body">
+                <h3>近七日预估收入</h3>
+                <p><cite>{empty name="$list.s_income"}0{else /}{$list.s_income}{/empty}</cite></p>
+              </a>
+            </li>
+            <li class="layui-col-xs6" style="width: 400px;">
+              <a lay-href="" class="layadmin-backlog-body">
+                <h3>总收入</h3>
+                <p><cite>{empty name="$list.income_all"}0{else /}{$list.income_all}{/empty}</cite></p>
+              </a>
+            </li>
+          </ul>
+    </div>
+        <div class="layui-form-item" style="margin-left: 50px;margin-top: 50px;">
+                <div class="layui-input-inline" style="width:400px;">
+                <a href="javascript:void(0)" class="layui-btn tday">今日</a>
+                <a href="javascript:void(0)" class="layui-btn yday">昨日</a>
+                <a href="javascript:void(0)" class="layui-btn sday">最近七日</a>
+                <a href="javascript:void(0)" class="layui-btn lday">最近30天</a>
+              </div>
+                  <input type="hidden" name="tday" value="0">
+                  <input type="hidden" name="yday" value="0">
+                  <input type="hidden" name="sday" value="0">
+                  <input type="hidden" name="lday" value="0">
+          <div class="layui-input-inline">
+            <select name="chart" lay-filter="fifi">
+                  <option value="1"  {if condition="$chart eq 1"}selected{/if}>展示量</option>
+                  <option value="2"  {if condition="$chart eq 2"}selected{/if}>点击量</option>
+                  <option value="3"  {if condition="$chart eq 3"}selected{/if}>预估收益(元)</option>
+                  <option value="4"  {if condition="$chart eq 4"}selected{/if}>千次展示收益(元)</option>
+                  <option value="5"  {if condition="$chart eq 5"}selected{/if}>点击率(%)</option>
+              </select>
+              
+          </div>
+          <div class="layui-input-inline">
+               <input type="text" class="layui-input" id="test6" placeholder=" - " name="times">
+            </div>
+            <button class="layui-btn" lay-submit="" lay-filter="demo1">搜索</button>
+        </div>
+    <div class="layui-card-body" id="main" style="height: 450px;width: 100%;"></div>
+  </form>
+{include file="public/foot"}
+</div>
+<script>
+        layui.use(['laydate','table'], function(){
+          var laydate = layui.laydate;
+          var table = layui.table;
+          table.init('tle', {
+            //height: 315 //设置高度
+            limit: {$line.limit} //注意：请务必确保 limit 参数（默认：10）是与你服务端限定的数据条数一致
+            //支持所有基础参数
+           
+          }); 
+          //执行一个laydate实例
+          laydate.render({
+            elem: '#test6'
+            ,range: true
+            ,value :[{$date1}]
+          });
+        });
+</script> 
+<script type="text/javascript">
+var myChart = echarts.init(document.getElementById('main'));
+
+option = {
+    tooltip : {
+        trigger: 'axis'
+    },
+    legend: {
+        data:[]
+    },
+    toolbox: {
+        show : true,
+        left: 'center',
+        feature : {
+            mark : {show: true},
+            dataView : {show: true, readOnly: false},
+            restore : {show: true},
+            saveAsImage : {show: true}
+        }
+    },
+    calculable : true,
+    xAxis : [
+        {
+            type : 'category',
+            boundaryGap : true,
+            data : [{$line.date}]
+        }
+    ],
+    yAxis : [
+        {
+            name : {$line.title},
+            type : 'value',
+        }
+    ],
+    series : [
+        {
+            name:{$line.title},
+            type:'line',
+            stack: '总量',
+            data:[{$line.data}]
+        }
+    ]
+};
+myChart.setOption(option);
+</script>
+<script type="text/javascript">
+    $('.tday').click(function(){
+      $('input[name=lday]').val(0);
+      $('input[name=sday]').val(0);
+      $('input[name=yday]').val(0);
+      $('input[name=tday]').val(1);
+      $('#fofo').submit();
+    })
+    $('.yday').click(function(){
+      $('input[name=lday]').val(0);
+      $('input[name=sday]').val(0);
+      $('input[name=yday]').val(1);
+      $('input[name=tday]').val(0);
+      $('#fofo').submit();
+    })
+    $('.sday').click(function(){
+      $('input[name=lday]').val(0);
+      $('input[name=sday]').val(1);
+      $('input[name=yday]').val(0);
+      $('input[name=tday]').val(0);
+      $('#fofo').submit();
+    })
+    $('.lday').click(function(){
+      $('input[name=lday]').val(1);
+      $('input[name=sday]').val(0);
+      $('input[name=yday]').val(0);
+      $('input[name=tday]').val(0);
+      $('#fofo').submit();
+    })
+
+    layui.use(['layer', 'form'], function(){
+      var layer = layui.layer
+      form = layui.form;
+      form.on('select(fifi)', function(data){
+         fofo.submit();     
+       });
+}); 
+    </script>
+</body>
+</html>

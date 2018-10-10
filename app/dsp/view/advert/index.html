@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>layui</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css"  media="all">
+  <link rel="stylesheet" href="__PUBLIC__/font-awesome/css/font-awesome.min.css" media="all" />
+  <link rel="stylesheet" href="__CSS__/admin.css"  media="all">
+  <style type="text/css">
+     #mypage .cur {
+        border: none;
+        background: #009688;
+        color: #fff;
+    }
+    /* tooltip */
+    #tooltip{
+      position:absolute;
+      border:1px solid #ccc;
+      background:#333;
+      padding:2px;
+      display:none;
+      color:#fff;
+    }
+</style>
+</head>
+<body style="padding:10px;">
+  <div class="tplay-body-div"> 
+    <div class="layui-tab layui-tab-card">
+      <ul class="layui-tab-title">
+        <li><a href="{:url('dsp/campaign/index')}" class="a_menu">推广计划</a></li>
+        <li class="layui-this">广告</li>
+      </ul>
+      <div class="layui-tab-content" >
+        <div class="layui-tab-item layui-show" style="height: 800px; margin-top: 15px;">
+
+            <form class="layui-form serch" action="{:url('dsp/advert/index')}" method="get">
+                <div class="layui-form-item" style="float: left;">
+                  <label class="layui-form-label">推广计划：</label>
+                    <div class="layui-input-inline">
+                      <select name="campaign_id">
+                        <option value="">全部</option>
+                          {notempty name="$campaign"}
+                           {volist name="$campaign" id="vo"}
+                                <option value="{$vo.id}" {if condition="$search.campaign_id eq $vo.id"}selected{/if}>{$vo.name}</option>
+                            {/volist}
+                          {/notempty}
+                      </select>
+                    </div>
+                  <div class="layui-input-inline">
+                    <input type="text" name="advert_name" lay-verify="title" autocomplete="off" placeholder="请输入广告名称" class="layui-input layui-btn-sm" value="{$search.advert_name}">
+                  </div>
+                  <div class="layui-input-inline">
+                    <input type="text" name="day" lay-verify="title" autocomplete="off" placeholder="请选择时间" class="layui-input layui-btn-sm" value="{$search.day}" id="day">
+                  </div>
+                  <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="serch">搜索</button>
+                </div>
+          </form> 
+
+             <table class="layui-table" lay-skin="line">
+              <thead>
+                <tr>
+                  <th>广告名称</th>
+                  <th>曝光量</th>
+                  <th>点击量</th>
+                  <th>点击率</th>
+                  <th>点击均价</th>
+                  <th>花费</th>
+                  <th>状态</th>
+                  <th>开启</th>
+                  <th>操作</th>
+                </tr> 
+              </thead>
+              <tbody>
+             {notempty name="$list"}
+             {volist name="$list" id="vo"}
+                  <tr>
+                    <td>{$vo.name}</td>
+                    <td>{$vo.im}</td>
+                    <td>{$vo.ck}</td>
+                    <td>{$vo.rate}%</td>
+                    <td>{$vo.ck_rate}</td>
+                    <td>{$vo.cost}</td>
+                    <td>
+                      {if condition="$vo.status eq 1"}审核成功
+                      {elseif condition="$vo.status eq 0"/} 待审核
+                      {elseif condition="$vo.status eq 2"/} 审核未通过{if condition="$vo.reson"}({$vo.reson}){else /}(无原因){/if}
+                      {elseif condition="$vo.status eq 3"/} 已删除
+                      {else /} 未知
+                      {/if}
+                    </td>
+                    <td>
+                      {if condition="$vo.handle_status eq 1"}
+                      <div class="layui-form" >
+                        <div class="layui-input-inline" >
+                            <input type="checkbox" name="stat" lay-skin="switch" lay-filter="stat" lay-text="开启|关闭" data-id="{$vo.id}" checked status="{$vo.handle_status}">
+                        </div>
+                      </div>
+                      {else /}
+                      <div class="layui-form" >
+                        <div class="layui-input-inline" >
+                            <input type="checkbox" name="stat" lay-skin="switch" lay-filter="stat" lay-text="开启|关闭" status="{$vo.handle_status}" data-id="{$vo.id}">
+                        </div>
+                      </div>
+                      {/if}
+                    </td>
+                    <td>
+                      <a href="{:url('dsp/advert/editor',['id'=>endecodeUserId($vo.id)])}" class="a_menu layui-btn layui-btn-primary layui-btn-xs">编辑</a>
+                      <button  class="a_menu layui-btn layui-btn-primary layui-btn-xs del" data-id="{$vo.id}">删除</button>
+                    </td>
+                  </tr>
+              {/volist}
+            {/notempty}
+              </tbody>
+            </table>
+            <div style="padding:0 20px;" id="mypage">{$list->render()}</div>      
+        </div>
+        
+      </div>
+      
+  {include file="public/foot"}
+    </div>
+
+</body>
+ <script>
+      layui.use(['form','jquery','layer','laydate'], function() {
+              var layer = layui.layer;
+              var laydate = layui.laydate;
+              $ = layui.jquery;
+              var form = layui.form;
+              form.on('switch(stat)', function(data) {
+                  var id = $(this).attr('data-id');
+                  var status = $(this).attr('status');
+                  if(status==0){
+                    status=1;
+                  }else{
+                    status=0;
+                  }
+                  $.ajax({
+                      url:"{:url('dsp/advert/btnstatus')}",
+                      data:{id:id,status:status},
+                      type:'post',
+                      async: false,
+                      success:function(res) {
+                          if(res.code == 1) {
+                              layer.alert(res.msg, function(index){
+                                location.href = res.url;
+                              })
+                          } else {
+                              layer.msg(res.msg);
+                          }
+                      }
+                  })
+                  return false;
+              });
+              $('.del').click(function(){
+                var id = $(this).attr('data-id');
+                layer.confirm('确定要删除此广告？',function(){
+                    $.ajax({
+                      url:"{:url('dsp/advert/del')}",
+                      data:{id:id},
+                      type:'post',
+                      async: false,
+                      success:function(res) {
+                          if(res.code == 1) {
+                              layer.alert(res.msg, function(index){
+                                location.href = res.url;
+                              })
+                          } else {
+                              layer.msg(res.msg);
+                          }
+                      }
+                  })
+                })
+              })
+            laydate.render({
+                elem: '#day'
+                ,range: '~'
+                , value: "{$search.day}"
+              });
+      });
+    </script>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>layui</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css"  media="all">
+  <link rel="stylesheet" href="__PUBLIC__/font-awesome/css/font-awesome.min.css" media="all" />
+  <link rel="stylesheet" href="__CSS__/admin.css"  media="all">
+  <style type="text/css">
+      #mypage .cur {
+        border: none;
+        background: #009688;
+        color: #fff;
+    }
+</style>
+</head>
+<body style="padding:10px;">
+  <div class="tplay-body-div">
+
+      <form class="layui-form serch" action="{:url('ssp/adslot/index')}" method="post">
+        
+        <div class="layui-form-item">
+          <div class="layui-input-inline" style="margin-top: 10px;width: 300px;">
+            <a class="layui-btn a_menu" href="{:url('ssp/adslot/add')}">+新增广告位</a>
+          </div>
+           <div class="layui-input-inline" style="margin-top: 10px;">
+            <select name="media_id" id="media_id" lay-filter="media_id">
+              <option value="">请选择媒体</option>
+              {volist name="$media_data" id="vo"}
+              <option value="{$vo.id}" >{$vo.mname}</option>
+              {/volist}
+            </select>
+           </div>
+          <div class="layui-input-inline" style="margin-top: 10px;">
+            <input type="text" name="adslot_name" lay-verify="title" autocomplete="off" placeholder="请输入广告位名称" class="layui-input layui-btn-sm" id="adslot_name" lay-filter="adslot_name">
+          </div>
+        </div>
+      </form> 
+      
+      <div class="layui-tab-item layui-show">
+           <script type="text/html" id="switchTpl">
+            <!-- 这里的 checked 的状态只是演示 -->
+            <input type="checkbox" name="status" value="{{d.id}}" lay-skin="switch" lay-text="开启|关闭" lay-filter="sexDemo" {{ d.status == 1 ? 'checked' : '' }}>
+          </script>
+           <table class="layui-hide" id="adslot" lay-filter="adslot"></table>
+      </div> 
+  </div>
+  {include file="public/foot"}
+</body>
+    <script type="text/javascript">
+    layui.use(['layer','table','form'], function(){
+      var layer = layui.layer;
+      var table = layui.table;
+      form = layui.form;
+      table.render({
+          elem: '#adslot'
+          ,url:"{:url('ssp/adslot/getAdslotData')}"
+          ,page: { //支持传入 laypage 组件的所有参数（某些参数除外，如：jump/elem） - 详见文档
+              layout: ['limit', 'count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
+              ,limit: 10
+              ,groups: 1 //只显示 1 个连续页码
+              ,first: false //不显示首页
+              ,last: false //不显示尾页
+          }
+          ,id: 'adslot'
+          ,toolbar: '#ope'
+
+          ,defaultToolbar: false
+          ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+          ,cols: [[
+              {field:'skey',align:'center',title:'标识',sort:true}
+              ,{field:'name',align:'center',title:'广告位名称',sort:true}
+              ,{field:'media_name',align:'center',title:'所属媒体',sort:true}
+              ,{field:'template_id',sort:true,align:'center',title:'形式'}
+              ,{field:'create_time',sort:true,align:'center',title:'创建时间'}
+              ,{field:'status', title:'状态',align:'center', templet: '#switchTpl', unresize: true}
+              ,{field:'url',align:'center',title:'编辑',templet: "<div><a href='{{d.url}}' class='a_menu'>修改</a></div>"}
+          ]]
+      });
+      var $ = layui.$, active = {
+              reload: function(){
+                var media_id = $('#media_id');
+                var adslot_name = $("#adslot_name");
+                //执行重载
+                table.reload('adslot', {
+                  page: {
+                    curr: 1 
+                  }
+                  ,where: {
+                   adslot_name: adslot_name.val(),
+                   media_id:media_id.val()
+                  }
+                });
+              }
+            };
+          $('#adslot_name').keyup(function(){
+              var type = 'reload';
+              active[type] ? active[type].call(this) : ''; 
+            })
+       table.on('sort(adslot)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+              //尽管我们的 table 自带排序功能，但并没有请求服务端。
+              //有些时候，你可能需要根据当前排序的字段，重新向服务端发送请求，如：
+              table.reload('adslot', {
+              initSort: obj //记录初始排序，如果不设的话，将无法标记表头的排序状态。 layui 2.1.1 新增参数
+              ,where: { //请求参数
+                 field: obj.field //排序字段
+                ,order: obj.type //排序方式
+              }
+              });
+            });
+       form.on('select(media_id)', function(data){
+           var type = 'reload';
+            active[type] ? active[type].call(this) : '';       
+         });
+        form.on('switch(sexDemo)', function(obj){
+              var id = this.value;
+              if(obj.elem.checked==false){
+                var status =0
+              }else{
+                var status =1
+              }
+              layer.confirm('确定要设置?', function(index) {
+                $.ajax({
+                  url:"{:url('ssp/adslot/status')}",
+                  type:'post',
+                  data:{id:id,status:status},
+                  success:function(res) {
+                    layer.msg(res.msg);
+                  }
+                })
+              })
+       });
+
+
+    }); 
+    </script>
+</html>
