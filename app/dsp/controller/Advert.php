@@ -112,7 +112,7 @@ class Advert extends Permissions
                 $insert_data['start_ts'] = strtotime($day[0]."00:00:00");
                 $insert_data['end_ts']   = strtotime($day[1].'23:59:59');
             }
-            
+
             if($insert_data['type'] == 1){
                 if($insert_data['media_id']=='') return $this->error('媒体必选');
                 $insert_data['type_val'] = $insert_data['media_id'];
@@ -234,11 +234,11 @@ class Advert extends Permissions
                     ];
                     $insert_data['material'] =json_encode($json_data);
             }
-            
+
             $insert_data['filter_net'] = array_sum($insert_data['filter_net']);
             $insert_data['filter_os'] = array_sum($insert_data['filter_os']);
             $insert_data['filter_sex'] = array_sum($insert_data['filter_sex']);
-            
+
             if (!$validate->check($insert_data)) {
                 $this->error('提交失败：' . $validate->getError());
             }
@@ -258,7 +258,7 @@ class Advert extends Permissions
             $son = Db::name('type')->field('name,id value')->where('pid',$val['id'])->select();
             //array_unshift($son,array('name'=>$val['name'].'(all)','value'=>$val['id']));
             $new_type[] = array('name'=>$val['name'],'value'=>$val['id'],'children'=>$son);
-            
+
         }
         $this->assign('camp',$camp);
         $this->assign('tf',$tf);
@@ -442,7 +442,7 @@ class Advert extends Permissions
             $material['text']['title']        = isset($material['text']['title']) ? $material['text']['title']:'';
             $material['text']['desc']         = isset($material['text']['desc']) ? $material['text']['desc']:'';
             $material['land']         = isset($material['land']) ? $material['land']:'';
-            $material['pages']        = isset($material['pages']) ? $material['pages']:'';
+            $material['pages']        = isset($material['pages']) && !empty($material['pages']) ? $material['pages']:'/pages/index/index';
             $material['interact']     = isset($material['interact']) ? $material['interact']:0;
             $list->start_ts = $list->start_ts ? date('Y-m-d',$list->start_ts) : 0;
             $list->end_ts   = $list->end_ts ? date('Y-m-d',$list->end_ts) : 0;
@@ -451,7 +451,7 @@ class Advert extends Permissions
                 $list->tou_day =2;
             }else{
                 $list->tou_day =1;
-            } 
+            }
             if (preg_match("/1/",$list->filter_hour,$m)){
                 $list->tou_time = 2;
             }else{
@@ -490,7 +490,7 @@ class Advert extends Permissions
             foreach($type as $key=>$val){
 
                 $son = Db::name('type')->field('name,id value')->where('pid',$val['id'])->select();
-                $new_type[] = array('name'=>$val['name'],'value'=>$val['id'],'children'=>$son); 
+                $new_type[] = array('name'=>$val['name'],'value'=>$val['id'],'children'=>$son);
             }
             $this->assign('tf',$tf);
             $this->assign('wxmedia',$wxmedia);
@@ -513,7 +513,7 @@ class Advert extends Permissions
         $status  = $this->request->param('status');
         $reson  = $this->request->param('reson');
         if($id && $status == 1){
-            
+
             $res = $CreativeModel->where('id',$id)->update(['status'=>1,'reson'=>$reson]);
 
           Db::name('auditlog')->insert(['opera_id'=>$this->getAdminId(),'upstatus'=>1,'create_time'=>time(),'creative_id'=>$id]);

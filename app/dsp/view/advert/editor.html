@@ -39,7 +39,7 @@
       }
 
       table td{
-        height: 30px;  
+        height: 30px;
         max-width: 20px;
           border: 1px solid #dfe6ec;
         font-size: 12px;
@@ -66,12 +66,12 @@
                     <input name="name" lay-verify="required" autocomplete="off" placeholder="请输入" class="layui-input" type="text" value="{$list.name}">
                   </div>
               </div>
-            
+
               <div class="layui-form-item">
                   <label class="layui-form-label">选择媒体</label>
                   <div class="layui-input-block">
                     <input name="type" lay-skin="primary" title="指定小程序" {if condition="$list.type eq 1 || $list.type eq 0"}checked{/if} type="radio" lay-filter="type" value="1">
-                    <input name="type" lay-skin="primary" title="指定分类"  {if condition="$list.type eq 2"}checked{/if} type="radio" lay-filter="type" value="2"> 
+                    <input name="type" lay-skin="primary" title="指定分类"  {if condition="$list.type eq 2"}checked{/if} type="radio" lay-filter="type" value="2">
                   </div>
 
                   <div class="layui-input-block" id="media">
@@ -85,7 +85,7 @@
 
                   <div class="layui-input-block" id="type" style="display: none;">
                     <select name="type_id"  xm-select-search xm-select="type_id" xm-select-show-count='4'  xm-select-search-type="dl">
-                           
+
                     </select>
                   </div>
               </div>
@@ -147,7 +147,7 @@
                          <div style="{if condition='$list.template_id eq 3'}{else /}display: none; {/if}" name="c"><img src="__IMAGES__/suspend_70.png" style="width: 170px; height: 280px;" ></div>
                         </div>
                   </div>
-                  <input type="hidden" name="template_id" value="{$list.template_id}" id="template_id">  
+                  <input type="hidden" name="template_id" value="{$list.template_id}" id="template_id">
               </div>
 
             <h3>投放时间及价格</h3><br>
@@ -162,7 +162,7 @@
                       <input class="layui-input" id="test1"  type="text" name="tou_day_1" value="{$list.start_ts}" autocomplete="off">
                       <input class="layui-input" id="test6"  type="text" name="tou_day_2" placeholder="~" value="{$list.start_ts} ~ {$list.end_ts}" autocomplete="off">
                     </div>
-     
+
               </div>
 
               <div class="layui-form-item">
@@ -207,7 +207,7 @@
                 </div>
                 <input type="hidden" name="img_2" value="{$list.material.image.main.url}">
               </div>
-              
+
               <h3>点击后效果</h3><br>
 
               <div class="layui-form-item">
@@ -276,12 +276,12 @@
 
           </div>
         </div>
-      </div>  
+      </div>
      </div>
-          
+
       </form>
      </div>
-       
+
     <div style="padding:0 20px;"></div>
   {include file="public/foot"}
 </div>
@@ -323,7 +323,7 @@
   }
   var loa = $('.one>div').eq(template_id-1).find('span').html();
   $('#img_text').html(loa)
-  
+
   $('.table_time_selected').hide();
   var tou_day = "{$list.tou_day}";
   if (tou_day==1){
@@ -418,7 +418,7 @@
          }
          if (data.value==2){
           $('.table_time_selected').show();
-         }    
+         }
     });
     form.on('radio(type)', function(data){
          if(data.value==1){
@@ -441,7 +441,7 @@
          if (data.value==2){
           $('#clk_type_1').hide();
           $('#clk_type_2').show();
-         }    
+         }
     });
     form.on('radio(tou_day)', function(data){
          if (data.value==1){
@@ -451,7 +451,7 @@
          if (data.value==2){
           $('#test1').hide();
           $('#test6').show();
-         }    
+         }
     });
     form.on('checkbox(filter_net)', function(data){
         if(data.value==-1){
@@ -461,7 +461,7 @@
         if(data.value!=-1){
           $(".filter_one").prop("checked", false);
            form.render('checkbox');
-        } 
+        }
     });
     form.on('checkbox(filter_os)', function(data){
         if(data.value == -1){
@@ -471,7 +471,7 @@
         if(data.value!=-1){
           $(".filter_s").prop("checked", false);
            form.render('checkbox');
-        } 
+        }
     });
     form.on('checkbox(filter_sex)', function(data){
         if(data.value == -1){
@@ -481,7 +481,7 @@
         if(data.value!=-1){
           $(".filter_se").prop("checked", false);
            form.render('checkbox');
-        } 
+        }
     });
     form.on('submit(advert)', function(data) {
           $.ajax({
@@ -514,7 +514,7 @@
         var flag = true;
         obj.preview(function(index, file, result){
             var img = new Image();
-            img.src = result; 
+            img.src = result;
             img.onload = function () { //初始化夹在完成后获取上传图片宽高，判断限制上传图片的大小。
                 if(img.width ==640 && img.height ==1136){
                     obj.upload(index, file); //满足条件调用上传方法
@@ -551,7 +551,7 @@
         var flag = true;
         obj.preview(function(index, file, result){
             var img = new Image();
-            img.src = result; 
+            img.src = result;
             img.onload = function () { //初始化夹在完成后获取上传图片宽高，判断限制上传图片的大小。
                 if(img.width ==wid && img.height ==hei){
                     obj.upload(index, file); //满足条件调用上传方法
@@ -587,7 +587,7 @@
         var flag = true;
         obj.preview(function(index, file, result){
             var img = new Image();
-            img.src = result; 
+            img.src = result;
             img.onload = function () { //初始化夹在完成后获取上传图片宽高，判断限制上传图片的大小。
                 if(img.width ==300 && img.height ==250){
                     obj.upload(index, file); //满足条件调用上传方法
@@ -624,7 +624,7 @@ upload.render({
         var flag = true;
         obj.preview(function(index, file, result){
             var img = new Image();
-            img.src = result; 
+            img.src = result;
             img.onload = function () { //初始化夹在完成后获取上传图片宽高，判断限制上传图片的大小。
                 if(img.width ==40 && img.height ==40){
                     obj.upload(index, file); //满足条件调用上传方法
@@ -664,7 +664,7 @@ upload.render({
     function minDate(){
     var now = new Date();
     return now.getFullYear()+"-" + (now.getMonth()+1) + "-" + now.getDate();
-  
+
     }
     $('#shutem').click(function(){
       $('.Selected').removeClass();
@@ -717,11 +717,11 @@ var Selected = 'Selected';
 var Start_x = null;
 var Start_y = null;
 //点击中表格的小时值
-var hour;   
+var hour;
 //点击选中的星期值
-var week;   
+var week;
 //1为这个格子在此次鼠标拖拽过程中被选中（不执行选中方法），0为没选中过
-var td_state = 0;   
+var td_state = 0;
 //生成星期数组
 var num = ['一','二','三','四','五','六','日'];
 //生成时间值数组
@@ -820,7 +820,7 @@ function SelectTD_click(StartIndex, EndIndex,Selected) {
             if (Selected_true == 1 && Selected_false == 1) {
                 $("td", SelectTR).eq(j).attr("class", Selected);
             }else if(Selected_false == 1){
-            //一列当中只存在未选中的表格处理:整列全部选中    
+            //一列当中只存在未选中的表格处理:整列全部选中
                 $("td", SelectTR).eq(j).attr("class", Selected);
             }else{
             //一列当中只存在已选中的表格处理:整列全部去掉选中
@@ -901,7 +901,7 @@ function convert_date(external_binary){
             }else{
                 var index = (y*48)+x;
             }
-            
+
             //获取td对应的二进制值
             var Selected_val = binary.charAt(index);
 
@@ -929,7 +929,7 @@ function convert_date(external_binary){
                     //选中行里除第一、二的表格以外，前一个表格已经选中，此元素前加- 后加逗号
                         time_hour_arr[time_hour_arr.length-1] = '-' + arr_hour[x] +', ';
                     }
-                    
+
                 }else if(binary.charAt(index-1) == 1 && x>0){
                 //选中的前一个已选中，且此次选中的不是行里第一个，此次选中的元素前加-后加逗号
                     time_hour_arr[time_hour_arr.length] = '-' + arr_hour[x] + ', ';
@@ -942,9 +942,9 @@ function convert_date(external_binary){
                 }
 
             }
-            
+
         }
-        
+
         time_week_arr[y] = time_hour_arr;
 
     }
@@ -1015,7 +1015,7 @@ function renewal(id){
         box_id = id;
     }
     //解绑鼠标移动监听事件
-    $('#' + box_id + ' table tbody tr td').unbind("mouseover"); 
+    $('#' + box_id + ' table tbody tr td').unbind("mouseover");
     //初始化表格的在此次选中状态
     $('#' + box_id + ' table tbody tr td').attr("td_state", '');
     //改变二进制值
@@ -1035,7 +1035,7 @@ function binary_selected(){
                 //更新操作，显示文字形日期
                 renewal();
             }
-                
+
         }
     }
 }
@@ -1071,7 +1071,7 @@ function load_time_table(id){
     for (var i = 0; i < 7; i++) {
         var week = i+1;
         html_tbody_td += '<tr>';
-        for (var j = 0; j < 49; j++){ 
+        for (var j = 0; j < 49; j++){
             if (j==0) {
                 html_tbody_td += '<th week="'+week+'">周' + num[i] +  '</th>';
             }else{
@@ -1119,10 +1119,10 @@ function load_time_table(id){
             EndTD = $(this);
             var x = ($(this).index())*2-2;
             var y = rows -1;    //为了配合for计算公式-1
-            
+
             EndIndex = { x: x, y: y };
             //改变第一次按下鼠标时候的改变选中状态
-            SelectTD_click(StartIndex, EndIndex, Selected); 
+            SelectTD_click(StartIndex, EndIndex, Selected);
         }
     });
 
@@ -1140,11 +1140,11 @@ function load_time_table(id){
             EndTD = $(this);
             var y = $(this).parent().index();
             var x = line-1;     //为了配合for计算公式-1
-            
+
             EndIndex = { x: x, y: y };
 
             //改变第一次按下鼠标时候的改变选中状态
-            SelectTD_click(StartIndex, EndIndex, Selected); 
+            SelectTD_click(StartIndex, EndIndex, Selected);
         }
     });
 
@@ -1160,12 +1160,12 @@ function load_time_table(id){
         var y = $(this).parent().index();
         EndIndex = { x: x, y: y };
         //改变第一次按下鼠标时候的改变选中状态
-        SelectTD(StartIndex, EndIndex, Selected); 
-                
+        SelectTD(StartIndex, EndIndex, Selected);
+
         StartTD = $(this);
 
-        StartIndex = { x: Start_x, y: Start_y };                    
-        
+        StartIndex = { x: Start_x, y: Start_y };
+
         //监听鼠标移动事件，实现改变后续鼠标拖拽时候的表格选中状态
         $('#' + box_id + ' table tbody tr td').mouseover(function(e){
             EndTD = $(this);
@@ -1173,13 +1173,13 @@ function load_time_table(id){
             var y = $(this).parent().index();
             EndIndex = { x: x, y: y };
             if(1 != e.which){    //判断是否为左击
-                $('#' + box_id + ' table tbody tr td').unbind("mouseover"); 
+                $('#' + box_id + ' table tbody tr td').unbind("mouseover");
             }
             //去除停留在td上的光标
             $('#' + box_id + ' .focus').focus();
-            SelectTD(StartIndex, EndIndex, Selected); 
+            SelectTD(StartIndex, EndIndex, Selected);
         });
-        
+
 
         //放开鼠标左键时，初始化相关参数和解绑相关监听
         $('html').unbind("mouseup").bind("mouseup", function () {
@@ -1206,6 +1206,5 @@ function get_time_html(binary){
       load_time_table('table_time_selected');
       load_time_table('table_time_selected1');
     });
-  
-</script>
 
+</script>

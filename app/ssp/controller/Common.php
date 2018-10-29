@@ -22,7 +22,7 @@ class Common extends Controller
         }
     }
 
-    public function upload()
+    public function upload($module='admin',$use='payimg')
     {
         if($this->request->file('file')){
             $file = $this->request->file('file');
@@ -31,18 +31,21 @@ class Common extends Controller
             $res['msg']='没有上传文件';
             return json($res);
         }
-        $size = 500*1024;
+        $size = 300*1024;
 
-        $path = ROOT_PATH . 'public' . DS . 'uploads' . DS . 'execl';
+        $module = $this->request->has('module') ? $this->request->param('module') : $module;//模块
 
-        $info = $file->validate(['size'=>$size,'ext'=>'xlsx,xls,csv'])->rule('unquid')->move($path);
+        $path = ROOT_PATH . 'public' . DS . 'uploads' . DS . $module . DS . $use;
+
+        $info = $file->validate(['size'=>$size,'ext'=>'jpg,png'])->rule('date')->move($path);
+
         $is_file = $path.DS.$info->getSaveName();
 
         if ($info && file_exists($is_file)) {
             $res['code'] = 200;
             $res['msg'] =  '上传成功';
-            $res['path'] = $path. DS .$info->getSaveName();
-            
+            $res['path'] = $this->request->domain().DS . 'uploads' . DS . $module . DS . $use.DS.$info->getSaveName();
+
         } else {
             $res['code'] = 100;
             $res['msg'] = $file->getError();
@@ -57,7 +60,7 @@ class Common extends Controller
      */
     public function login()
     {
-        if(Session::has('admin') == false) { 
+        if(Session::has('admin') == false) {
             if($this->request->isPost()) {
                 //是登录操作
                 $post = $this->request->post();
@@ -102,7 +105,7 @@ class Common extends Controller
                         Session::set("admin_cate_id",$name['ssp_cate_id']); //保存新的
                         //记录登录时间和ip
                         Db::name('sspuser')->where('id',$name['id'])->update(['login_ip' =>  $this->request->ip(),'login_time' => time()]);
-                        Log::record("== xxx登录成功 ==", 'DEBUG'); 
+                        Log::record("== xxx登录成功 ==", 'DEBUG');
                         Log::record(json_encode($name), 'DEBUG');
                         return $this->success('登录成功,正在跳转...','ssp/index/index');
                     }
@@ -115,7 +118,7 @@ class Common extends Controller
             }
         } else {
             $this->redirect('ssp/index/index');
-        }   
+        }
     }
 
     /**
@@ -161,7 +164,7 @@ class Common extends Controller
         if($this->request->isPost()){
             header("Content-type: text/html; charset=utf-8");
             $post = $this->request->post();
-            
+
             $validate = new \think\Validate([
                 ['name', 'require|email', '用户名只能是邮箱'],
                 ['nickname', 'require', '昵称不能为空'],
@@ -199,11 +202,11 @@ class Common extends Controller
             $message = "<a href='".$url."' target= '_blank'>$url</a><br/>如果以上链接无法点击，请将它复制到你的浏览器地址栏中进入访问，该链接24小时内有效。";
             $res = SendMail($post['name'],$message);
             if($res){
-                Log::record("== xxx注册成功 ==", 'DEBUG'); 
+                Log::record("== xxx注册成功 ==", 'DEBUG');
                 Log::record(json_encode($post), 'DEBUG');
                 return $this->success('请去邮箱中激活账号完成注册...','ssp/common/login');
             }else{
-                Log::record("== xxx注册失败 ==", 'DEBUG'); 
+                Log::record("== xxx注册失败 ==", 'DEBUG');
                 Log::record(json_encode($post), 'DEBUG');
                 return $this->error('邮件发送失败');
             }
@@ -211,7 +214,7 @@ class Common extends Controller
         return $this->fetch();
     }
     public function callback_reg(){
-        
+
         $verify = $this->request->has('verify') ? $this->request->param('verify', '', 'string') : '';
         $user_arr = myencode($verify);
         if(!empty($user_arr) && is_array($user_arr) && count($user_arr)==6){
@@ -247,11 +250,11 @@ class Common extends Controller
                     ];
                     $res = Db::name('sspuser')->insert($insert_arr);
                     if($res){
-                        Log::record("== xxx激活成功 ==", 'DEBUG'); 
+                        Log::record("== xxx激活成功 ==", 'DEBUG');
                         Log::record(json_encode($insert_arr), 'DEBUG');
                         return $this->success('注册成功','ssp/common/login');
                     }else{
-                        Log::record("== xxx激活失败 ==", 'DEBUG'); 
+                        Log::record("== xxx激活失败 ==", 'DEBUG');
                         Log::record(json_encode($insert_arr), 'DEBUG');
                         return $this->error('注册失败');
                     }

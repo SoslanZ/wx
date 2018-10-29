@@ -56,7 +56,7 @@ class Adslot extends Permissions
             $where['uid'] = $this->getAdminId();
         }
 
-        $type = array(1=>'Banner(582*166px)',2=>'插屏(600*500px)',3=>'悬浮窗(50*50px)',4=>'悬浮窗(60*60px)',5=>'悬浮窗(70*70px)');
+        $type = array(1=>'Banner(582*166px)',2=>'插屏(600*500px)',3=>'悬浮窗',4=>'悬浮窗',5=>'悬浮窗');
         $count = $adslotModel->alias('a')->field('a.name,a.id,a.skey,a.template_id,a.create_time,a.status,a.media_id,m.mname as media_name,m.uid')
                 ->join('ssp_media m',' a.media_id=m.id ','left')
                 ->where($where)
@@ -96,9 +96,6 @@ class Adslot extends Permissions
                     ['media_id', 'require', '所属媒体必选'],
                     ['template_id', 'require', '广告形式必选'],
             ]);
-            if ($insert_data['template_id']==3) {
-                $insert_data['template_id'] = $insert_data['template_s'];
-            }
             if (!$validate->check($insert_data)) {
                 $this->error('提交失败：' . $validate->getError());
             }

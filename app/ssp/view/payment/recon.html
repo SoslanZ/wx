@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>tplay_main</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <script src="__PUBLIC__/echarts/echarts.min.js"></script>
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/font-awesome/css/font-awesome.min.css" media="all">
+  <link rel="stylesheet" href="__CSS__/admin-1.css" media="all">
+<body class="layui-layout-body" style="overflow-y:visible;">
+<div class="tplay-body-div">
+  <div class="layui-card-header">最新数据（当日数据仅供参考，请以隔天数据为准）</div>
+    <div class="layui-card-body">
+       <form class="layui-form serch" action="{:url('ssp/payment/index')}" method="post" id="fofo">
+          <div class="layui-form-item" >
+            <div class="layui-input-inline">
+              <select name="uid" lay-filter="uid" id="uid">
+                <option value="0">全部用户</option>
+                 {volist name="$users" id="vo"}
+                    <option value="{$vo.id}">{$vo.nickname}</option>
+                {/volist}
+                </select>
+            </div>
+            <div class="layui-input-inline" >
+              <select name="media_id" lay-filter="media_id" id="media_id">
+                <option value="0">全部媒体</option>
+
+                </select>
+            </div>
+            <div class="layui-input-inline">
+               <input type="text" class="layui-input" id="times" placeholder=" - " name="times">
+            </div>
+          </div>
+
+      <div class="layui-carousel layadmin-backlog"  lay-indicator="inside" lay-arrow="none" style="width: 100%; margin-bottom: 50px;">
+
+          <ul class="layui-row layui-col-space10 layui-this">
+            <li class="layui-col-xs6" style="width:30%">
+              <a lay-href="" class="layadmin-backlog-body">
+                <h3>总展示量</h3>
+                <p><cite>0</cite></p>
+              </a>
+            </li>
+            <li class="layui-col-xs6" style="width:30%">
+              <a lay-href="" class="layadmin-backlog-body">
+                <h3>总点击量</h3>
+                <p><cite>0</cite></p>
+              </a>
+            </li>
+            <li class="layui-col-xs6" style="width:30%">
+              <a lay-href="" class="layadmin-backlog-body">
+                <h3>总收入(元)</h3>
+                <p><cite>0</cite></p>
+              </a>
+            </li>
+          </ul>
+    </div>
+  </form>
+  <div class="layui-tab-item layui-show">
+       <script type="text/html" id="toolbarDemo"><h3>对账数据</h3></script>
+       <table class="layui-hide" id="report_tab" lay-filter="report_tab"></table>
+  </div>
+{include file="public/foot"}
+</div>
+<script>
+        layui.use(['laydate','table'], function(){
+          var laydate = layui.laydate;
+          var table = layui.table,form=layui.form;
+            table.render({
+              elem: '#report_tab'
+              ,url:"{:url('ssp/payment/recondata')}"
+              //,where: {forms}
+              ,page: { //支持传入 laypage 组件的所有参数（某些参数除外，如：jump/elem） - 详见文档
+                  layout: ['limit', 'count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
+                  ,limit: 10
+                  ,groups: 1 //只显示 1 个连续页码
+                  ,first: false //不显示首页
+                  ,last: false //不显示尾页
+              }
+              ,id: 'report_tab'
+              ,toolbar: '#toolbarDemo'
+
+              ,defaultToolbar: ['filter', 'exports']
+              ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+              ,cols: [[
+                  {field:'days',align:'center',title:'日期',sort:true}
+                  ,{field:'media_name',align:'center',title:'媒体名称',sort:true}
+                  ,{field:'slot_name',align:'center',title:'广告位名称',sort:true}
+                  ,{field:'im',sort:true,align:'center',title:'展示数'}
+                  ,{field:'ck',sort:true,align:'center',title:'点击数'}
+                  ,{field:'click_rate',sort:true,align:'center',title:'点击率(%)'}
+                  ,{field:'income',sort:true,align:'center',title:'预估收入(元)'}
+                  ,{field:'cpm',sort:true,align:'center',title:'cpm(元)'}
+                  ,{field:'cpc',sort:true,align:'center',title:'cpc(元)'}
+              ]]
+          });
+            var $ = layui.$, active = {
+              reload: function(){
+                var times = $('#times');
+                var media_id = $("#media_id");
+                var uid = $('#uid');
+                load_ajax()
+                //执行重载
+                table.reload('report_tab', {
+                  page: {
+                    curr: 1
+                  }
+                  ,where: {
+                   times: times.val(),
+                   media_id:media_id.val(),
+                   uid:uid.val()
+                  }
+                });
+              }
+            };
+              table.on('tool(report_tab)',function(obj){
+              var data = obj.data;
+            })
+                //排序
+            table.on('sort(report_tab)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+              //尽管我们的 table 自带排序功能，但并没有请求服务端。
+              //有些时候，你可能需要根据当前排序的字段，重新向服务端发送请求，如：
+              table.reload('report_tab', {
+              initSort: obj //记录初始排序，如果不设的话，将无法标记表头的排序状态。 layui 2.1.1 新增参数
+              ,where: { //请求参数
+                 field: obj.field //排序字段
+                ,order: obj.type //排序方式
+              }
+              });
+              return false;
+            });
+          //时间
+          laydate.render({
+            elem: '#times'
+            ,range: '~'
+            ,value :[{$date1}]
+            ,done: function(value, date){
+              $('#times').val(value);
+               var type = 'reload';
+              active[type] ? active[type].call(this) : '';
+            }
+          });
+          //账号选择
+          form.on('select(uid)', function(data){
+              var type = 'reload';
+              active[type] ? active[type].call(this) : '';
+              $.ajax({
+                type:"POST",
+                url:"{:url('ssp/payment/findmedia')}",
+                data:{'uid':data.value},
+                success:function(e){
+                    //empty() 方法从被选元素移除所有内容
+                    $("select[name='media_id']").empty();
+                    var html = "<option value='0'>请选择媒体</option>";
+                    $(e.data).each(function (v, k) {
+                        html += "<option value='" + k.id + "'>" + k.mname + "</option>";
+                    });
+                    //把遍历的数据放到select表里面
+                    $("select[name='media_id']").append(html);
+                    //从新刷新了一下下拉框
+                    form.render('select');
+                }
+            });
+           });
+          //媒体选择
+          form.on('select(media_id)', function(data){
+              var type = 'reload';
+              active[type] ? active[type].call(this) : '';
+           });
+        });
+</script>
+<script type="text/javascript">
+
+  load_ajax()
+
+function load_ajax(){
+    var times = $('#times').val();
+    var media_id = $("#media_id").val();
+    var uid = $('#uid').val();
+    $.ajax({
+            url:"{:url('ssp/payment/alldata')}",
+            data:{times:times,media_id:media_id,uid:uid},
+            type:'post',
+            success:function(res) {
+                console.log(res);
+                $('cite').eq(0).html(res.im)
+                $('cite').eq(1).html(res.ck)
+                $('cite').eq(2).html(res.income)
+            }
+        })
+}
+
+</script>
+</body>
+</html>

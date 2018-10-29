@@ -108,7 +108,7 @@ class Report extends Permissions
         $group ='';
         $where=[];
         $where['day']   = ['between',"$start_time,$end_time"];
-        $where['im']=['neq',''];
+        //$where['im']=['neq',''];
         $time_true= date('Y-m-d',$start_time) == date('Y-m-d',$end_time) ? true : false;
         $days = $this->getTime($start_time,$end_time,$time_true);
         if($time_true){
@@ -149,7 +149,7 @@ class Report extends Permissions
                 $data[$k]['days'] = date('Y-m-d',strtotime($val['days']));
             }
             $data[$k]['ck_rate'] = sprintf("%.3f", $val['ck_rate']/1000);
-            
+
             $data[$k]['ck_avg'] = sprintf("%.3f", $val['ck_avg']/1000);
 
         }
@@ -249,7 +249,7 @@ class Report extends Permissions
 
         $im=array_column($data,'im');
         $ck=array_column($data,'ck');
-        $cost=array_column($data,'cost'); 
+        $cost=array_column($data,'cost');
         $ck_rate=array_column($data,'ck_rate');
         $ck_avg=array_column($data,'ck_avg');
         $title = $this->getTitle($chart);

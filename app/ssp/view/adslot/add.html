@@ -41,15 +41,10 @@
           <div class="layui-input-block">
             <input type="radio" name="template_id" value="1" title="Banner广告(582*166px)" checked="" lay-filter="type">
             <input type="radio" name="template_id" value="2" title="插屏广告(600*500px)" lay-filter="type">
-            <input type="radio" name="template_id" value="3" title="悬浮窗(200*200px)" lay-filter="type">
+            <div id="mytest" style="display: inline-block;">
+            <input type="radio" name="template_id" value="3" title="悬浮窗" lay-filter="type">
+            </div>
           </div>
-        </div>
-        <div class="layui-form-item" style="width: 400px;margin-left: 110px;" hidden id="tt">
-             <select name="template_s" lay-filter="type_son" lay-verify="required">
-              <option value="3">50*50px</option>
-              <option value="4">60*60px</option>
-              <option value="5">70*70px</option>
-            </select>
         </div>
         <div class="layui-form-item">
           <div class="layui-input-block">
@@ -89,6 +84,11 @@
     layui.use(['layer', 'form'], function(){
       var layer = layui.layer
       ,form = layui.form;
+      $(document).on('mouseenter', '#mytest', function(){        
+        tip_index = layer.tips('根据手机屏幕大小自动适配50,60,70px', '#mytest', {time: 0});    
+      }).on('mouseleave', '#mytest', function(){   
+             layer.close(tip_index);  
+        });
       form.on('radio(type)', function(data){
          if(data.value==1){
           $('#tt').hide();
@@ -101,20 +101,7 @@
 
          }if(data.value==3){
           $('#tt').show();
-          $('#images').attr('src','__IMAGES__/suspend.png');
-         }      
-       });
-      form.on('select(type_son)', function(data){
-         if(data.value==3){
-          $('#images').attr('src','__IMAGES__/suspend.png');
-
-         }
-         if(data.value==4){
-          $('#images').attr('src','__IMAGES__/suspend_60.png');
-
-         }if(data.value==5){
           $('#images').attr('src','__IMAGES__/suspend_70.png');
-
          }      
        });
       $(window).on('load', function() {

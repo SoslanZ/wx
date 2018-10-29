@@ -81,7 +81,7 @@ class Reporter extends Permissions
         if($pos_id){
             $where['slot_id'] = $pos_id;
         }
-        $where['im']=['neq',''];
+        //$where['im']=['neq',''];
         $count = Db::name('media_report')
                 ->alias('a')->field("FROM_UNIXTIME(a.day,'%Y%m%d') days,ap.name as slot_name,me.mname media_name,sum(im) im,sum(ck) ck,sum(income) income")
                 ->join('ssp_adslot ap',' a.slot_id=ap.id ','left')
@@ -183,7 +183,7 @@ class Reporter extends Permissions
                 $data[$k]['cpc'] = 0;
             }else{
                 $data[$k]['cpc'] = sprintf("%.3f", $val['income']/$val['ck']);
-            } 
+            }
         }
         $list    = [
             'click_rate'=>0,
@@ -200,7 +200,7 @@ class Reporter extends Permissions
         array_multisort(array_column($data, 'days'),SORT_ASC,$data);
         $show_num=array_column($data,'im');
         $click_num=array_column($data,'ck');
-        $estimated_income=array_column($data,'income'); 
+        $estimated_income=array_column($data,'income');
         $click_rate=array_column($data,'click_rate');
         $cpm=array_column($data,'cpm');
 

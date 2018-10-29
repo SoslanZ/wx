@@ -19,7 +19,7 @@ function password($password, $password_code='lshi4AsSUrUOwWV')
 function addlog($operation_id='')
 {
    return true;
-	
+
 }
 
 
@@ -57,4 +57,21 @@ function endecodeUserId($string, $action = 'encode') {
         $coderes = substr($string, $startLen-$uidlen+1,$uidlen);
     }
     return  $coderes;
+}
+function getIp(){
+    if (getenv("HTTP_CLIENT_IP") && strcasecmp(getenv("HTTP_CLIENT_IP"), "unknown"))
+        $ip = getenv("HTTP_CLIENT_IP");
+    else if (getenv("HTTP_X_FORWARDED_FOR") && strcasecmp(getenv("HTTP_X_FORWARDED_FOR"), "unknown"))
+        $ip = getenv("HTTP_X_FORWARDED_FOR");
+    else if (getenv("REMOTE_ADDR") && strcasecmp(getenv("REMOTE_ADDR"), "unknown"))
+        $ip = getenv("REMOTE_ADDR");
+    else if (isset($_SERVER['REMOTE_ADDR']) && $_SERVER['REMOTE_ADDR'] && strcasecmp($_SERVER['REMOTE_ADDR'], "unknown"))
+        $ip = $_SERVER['REMOTE_ADDR'];
+    else
+        $ip = "unknown";
+    return($ip);
+}
+function getAllUrl($url){
+    return str_replace('\\','/',$url);
+
 }

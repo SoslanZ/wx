@@ -102,9 +102,7 @@ return [
 
     \think\Route::domain('dsp','dsp'),
 
-    \think\Route::domain('ssp','ssp'),
-
-    \think\Route::domain('www','index'),
+     \think\Route::domain('ssp','ssp'),
 
     'base_url'=>'' ,
 
@@ -269,20 +267,20 @@ return [
     // +----------------------------------------------------------------------
     'captcha'  => [
         // 验证码字符集合
-        'codeSet'  => '4415165156465132125498462132156148716521561', 
+        'codeSet'  => '4415165156465132125498462132156148716521561',
         // 验证码字体大小(px)
-        'fontSize' => 28, 
+        'fontSize' => 28,
         // 是否画混淆曲线
-        'useCurve' => false, 
+        'useCurve' => false,
         //是否添加杂点
         'useNoise' => true,
          // 验证码图片高度
         'imageH'   => 0,
         // 验证码图片宽度
-        'imageW'   => 0, 
+        'imageW'   => 0,
         // 验证码位数
-        'length'   => 4, 
-        // 验证成功后是否重置        
+        'length'   => 4,
+        // 验证成功后是否重置
         'reset'    => true,
         //过期时间S
         'expire'   => 300,

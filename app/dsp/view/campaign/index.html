@@ -27,7 +27,7 @@
 </style>
 </head>
 <body style="padding:10px;">
-  <div class="tplay-body-div"> 
+  <div class="tplay-body-div">
     <div class="layui-tab layui-tab-card">
       <ul class="layui-tab-title">
         <li class="layui-this">推广计划</li>
@@ -91,7 +91,7 @@
                 </div>
                 <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="serch">搜索</button>
               </div>
-            </form> 
+            </form>
 
              <table class="layui-table" lay-skin="line">
               <thead>
@@ -105,10 +105,10 @@
                   <th width="100">状态</th>
                   <th>限额（元/天）</th>
                   <th>操作</th>
-                </tr> 
+                </tr>
               </thead>
               <tbody>
-           
+
            {notempty name="$list"}
              {volist name="$list" id="vo"}
                   <tr>
@@ -119,19 +119,13 @@
                     <td>{$vo.ck_rate}</td>
                     <td>{$vo.cost}</td>
                     <td>
-                      {if condition="$vo.status eq 1"}
+
                       <div class="layui-form" >
                         <div class="layui-input-inline" >
-                            <input type="checkbox" name="stat" lay-skin="switch" lay-filter="stat" lay-text="开启|关闭" data-id="{$vo.id}" checked status="{$vo.status}">
+                            <input type="checkbox" name="stat" lay-skin="switch" lay-filter="stat" lay-text="开启|关闭" value="{$vo.id}" {if condition="$vo.status eq 1"} checked {/if} status="{$vo.status}">
                         </div>
                       </div>
-                      {else /}
-                      <div class="layui-form" >
-                        <div class="layui-input-inline" >
-                            <input type="checkbox" name="stat" lay-skin="switch" lay-filter="stat" lay-text="开启|关闭" status="{$vo.status}" data-id="{$vo.id}">
-                        </div>
-                      </div>
-                      {/if}
+
                     </td>
                     <td>{$vo.budget}</td>
                     <td>
@@ -141,14 +135,14 @@
                   </tr>
               {/volist}
             {/notempty}
-            
+
               </tbody>
             </table>
             <div style="padding:0 20px;" id="mypage">{$list->render()}</div>
-          </div>      
+          </div>
         </div>
       </div>
-      
+
   {include file="public/foot"}
     </div>
 </body>
@@ -158,31 +152,24 @@
               var laydate = layui.laydate;
               $ = layui.jquery;
               var form = layui.form;
-              form.on('switch(stat)', function(data) {
-                  var id = $(this).attr('data-id');
-                  var status = $(this).attr('status');
-                  if(status==0){
-                    status=1;
-                  }else{
-                    status=0;
-                  }
-                  $.ajax({
-                      url:"{:url('dsp/campaign/btnstatus')}",
-                      data:{id:id,status:status},
-                      type:'post',
-                      async: false,
-                      success:function(res) {
-                          if(res.code == 1) {
-                              layer.alert(res.msg, function(index){
-                                location.href = res.url;
-                              })
-                          } else {
-                              layer.msg(res.msg);
-                          }
-                      }
-                  })
-                  return false;
-              });
+              form.on('switch(stat)', function(obj){
+                    var id = this.value;
+                    if(obj.elem.checked==false){
+                      var status =0
+                    }else{
+                      var status =1
+                    }
+                    layer.confirm('确定要设置?', function(index) {
+                      $.ajax({
+                        url:"{:url('dsp/campaign/btnstatus')}",
+                        type:'post',
+                        data:{id:id,status:status},
+                        success:function(res) {
+                          layer.msg(res.msg);
+                        }
+                      })
+                    })
+             });
               $('.del').click(function(){
                 var id = $(this).attr('data-id');
                 layer.confirm('确定要删除此推广计划？',function(){
